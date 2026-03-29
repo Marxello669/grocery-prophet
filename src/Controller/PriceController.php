@@ -24,10 +24,11 @@ final class PriceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $price->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($price);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_price_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('price/new.html.twig', [
@@ -46,7 +47,7 @@ final class PriceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_price_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('price/edit.html.twig', [

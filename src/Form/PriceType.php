@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Grocery;
 use App\Entity\Price;
+use App\Enum\ShopEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,8 +17,8 @@ class PriceType extends AbstractType
     {
         $builder
             ->add('value')
-            ->add('shop')
-            ->add('grocery', EntityType::class, ['class' => Grocery::class, 'choice_label' => 'name']);
+            ->add('shop', EnumType::class, ['class' => ShopEnum::class, 'choice_label' => 'label', 'placeholder' => 'Choose a shop'])
+            ->add('grocery', EntityType::class, ['class' => Grocery::class, 'choice_label' => 'name', 'placeholder' => 'Choose a grocery']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

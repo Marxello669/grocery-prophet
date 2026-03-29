@@ -46,15 +46,15 @@
         {% endif %}
 
         <section class="card bg-base-100 shadow-sm overflow-hidden">
-
             {# Table header #}
-            <div class="hidden sm:grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center
+            <div class="hidden sm:grid grid-cols-[2.5rem_1fr_6rem_6rem_6rem_2rem] gap-x-4 items-center
                   px-5 py-3 border-b border-base-300 text-xs font-semibold uppercase tracking-wider
                   text-base-content/40 select-none">
                 <span></span>
                 <span>Product</span>
                 <span>Type</span>
                 <span class="text-right">Price</span>
+                <span>Shop</span>
                 <span class="text-right"></span>
             </div>
 
@@ -67,7 +67,7 @@
             {# Skeleton #}
             <ul class="w-full flex flex-col" data-loading="show">
                 {% for i in 1..5 %}
-                    <li class="grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
+                    <li class="grid grid-cols-[2.5rem_1fr_6rem_6rem_6rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
                         <div class="skeleton h-6 w-6 rounded-full"></div> {# Icon/Checkbox #}
                         <div class="flex flex-col gap-2">
                             <div class="skeleton h-4 w-32"></div> {# Title #}
@@ -75,6 +75,7 @@
                         </div>
                         <div class="skeleton h-4 w-20"></div> {# Type #}
                         <div class="skeleton h-4 w-16 justify-self-end"></div> {# Price #}
+                        <div class="skeleton h-4 w-16 justify-self-end"></div> {# Shop #}
                         <div class="skeleton h-6 w-1 rounded-full justify-self-end"></div> {# Actions #}
                     </li>
                 {% endfor %}

@@ -167,7 +167,7 @@
                         </div>
                         {{ form_widget(form.grocery, {
                             attr: {
-                                class: 'select select-bordered w-full text-sm pl-9'
+                                class: 'select select-bordered w-full text-sm'
                                 ~ (form.grocery.vars.errors|length > 0 ? ' select-error' : '')
                             }
                         }) }}
@@ -186,8 +186,7 @@
                     {% else %}
                         <p class="text-xs text-base-content/40">
                             The grocery item this price belongs to. Can't find it?
-                            <a href="{{ path('app_grocery_new') }}" class="link link-hover text-primary">Add a new
-                                product ↗</a>
+                            <a href="{{ path('app_grocery_new') }}" class="link link-hover text-primary">Add a new product ↗</a>
                         </p>
                     {% endif %}
                 </div>
