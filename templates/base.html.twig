@@ -63,8 +63,8 @@
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div role="alert"
-                         class="alert alert-soft shadow-lg pointer-events-auto mb-2 min-w-[20rem]
-                                alert-{{ label == 'error' ? 'error' : (label == 'warning' ? 'warning' : 'success') }}">
+                         data-controller="flash"
+                         class="alert alert-soft shadow-lg pointer-events-auto mb-2 min-w-[20rem] alert-success">
                         {% if label == 'success' %}
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
