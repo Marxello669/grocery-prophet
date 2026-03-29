@@ -1,0 +1,21 @@
+{
+    frankenphp
+    order php_server before file_server
+    local_certs
+}
+
+:80 {
+    root * /app/public
+
+    encode zstd br gzip
+
+    php_server
+
+    file_server
+
+    log {
+        output stderr
+        format console
+        level INFO
+    }
+}

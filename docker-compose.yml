@@ -1,0 +1,75 @@
+services:
+
+  ###############################################################
+  # FrankenPHP — Web + PHP worker                               #
+  ###############################################################
+  app:
+    build:
+      context: .
+      target: dev          # Change to "prod" for production builds
+      dockerfile: Dockerfile
+    container_name: symfony_app
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - ./docker/php/php.dev.ini:/usr/local/etc/php/conf.d/99-custom.ini:ro
+    ports:
+      - "80:80"
+      - "2019:2019"   # Caddy admin API
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - symfony
+
+  ###############################################################
+  # MySQL 8                                                     #
+  ###############################################################
+  db:
+    image: mysql:8.0
+    container_name: symfony_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d:ro   # optional custom config
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - symfony
+
+  ###############################################################
+  # phpMyAdmin (optional — remove in production)               #
+  ###############################################################
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: symfony_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - symfony
+
+volumes:
+  mysql_data:
+
+networks:
+  symfony:
+    driver: bridge

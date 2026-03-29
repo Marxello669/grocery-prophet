@@ -1,0 +1,269 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ grocery.name }} — Profile{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&family=Fraunces:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+        }
+
+        html {
+            font-family: var(--font-body);
+        }
+
+        .font-display {
+            font-family: var(--font-display);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% if currentPrices is not defined %}
+        {% set currentPrices = [
+            { store: 'Continente', price: '0.89', lowest: true,  highest: false },
+            { store: 'Pingo Doce', price: '0.99', lowest: false, highest: false },
+            { store: 'Lidl',       price: '1.13', lowest: false, highest: true  }
+        ] %}
+    {% endif %}
+
+    {# Chart data — in production, serialize from $history via json_encode #}
+    {% set chartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'] %}
+    {% set chartDatasets = [
+        { store: 'Continente', color: '#1D9E75', data: [0.95, 0.92, 0.89, 0.91, 0.88, 0.89, 0.89] },
+        { store: 'Pingo Doce', color: '#378ADD', data: [1.05, 1.02, 0.99, 1.05, 1.02, 0.99, 0.99] },
+        { store: 'Lidl',       color: '#D85A30', data: [1.09, 1.15, 1.19, 1.10, 1.15, 1.13, 1.13] }
+    ] %}
+
+    {# Derived stats #}
+    {% set allPrices = currentPrices|map(p => p.price|number_format(2)) %}
+    {% set lowestPrice  = currentPrices|filter(p => p.lowest)|first %}
+    {% set highestPrice = currentPrices|filter(p => p.highest)|first %}
+    {% set avgPrice = (currentPrices|reduce((carry, p) => carry + p.price|number_format(2), 0) / currentPrices|length)|number_format(2) %}
+    {% set spread = (highestPrice.price - lowestPrice.price)|number_format(2) %}
+
+    <div class="min-h-screen bg-base-200">
+
+        {# ── TOPBAR ── #}
+        <header class="bg-base-100 border-b border-base-300 sticky top-0 z-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+                {# Breadcrumb #}
+                <div class="breadcrumbs text-sm py-0">
+                    <ul>
+                        <li><a href="{{ path('app_index') }}">Products</a></li>
+                        <li class="text-base-content/70">{{ grocery.name }}</li>
+                    </ul>
+                </div>
+                {# Actions #}
+                <div class="ml-auto flex gap-2">
+                    <a href="{{ path('app_grocery_edit', { id: grocery.id }) }}"
+                       class="btn btn-ghost btn-sm">
+                        Edit
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
+
+            {# ── HERO CARD ── #}
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body p-5 sm:p-6">
+                    <div class="flex items-start gap-4">
+
+                        {# Product icon #}
+                        <div
+                            class="w-14 h-14 rounded-xl bg-base-200 flex items-center justify-center text-3xl shrink-0 select-none">
+                            {{ grocery.emoji ?? '🛒' }}
+                        </div>
+
+                        {# Name + meta #}
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2 flex-wrap">
+                                <div>
+                                    <h1 class="font-display text-2xl text-base-content leading-tight">{{ grocery.name }}</h1>
+                                    <p class="text-sm text-base-content/50 mt-0.5">
+                                        <span
+                                            class="badge badge-ghost badge-sm align-middle">{{ grocery.type.label }}</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            {# Lowest price highlight #}
+                            <div class="flex items-baseline gap-2 mt-3">
+              <span class="font-display text-3xl font-bold text-primary">
+                €{{ lowestPrice.price ?? '—' }}
+              </span>
+                                <span class="text-xs text-base-content/40">lowest today · {{ lowestPrice.store }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {# ── STAT TILES ── #}
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Stores</p>
+                    <p class="text-2xl font-bold text-base-content mt-1">{{ currentPrices|length }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Avg. price</p>
+                    <p class="text-2xl font-bold text-base-content mt-1">€{{ avgPrice }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+                    <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Spread</p>
+                    <p class="text-2xl font-bold text-base-content mt-1">€{{ spread }}</p>
+                </div>
+            </div>
+
+            {# ── PRICE HISTORY CHART ── #}
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body p-5 sm:p-6 gap-4">
+
+                    {# Chart header + legend #}
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h2 class="text-base font-semibold text-base-content">Price history per store</h2>
+                            <p class="text-xs text-base-content/40 mt-0.5">Last 7 months</p>
+                        </div>
+                        {# Custom legend #}
+                        <div class="flex flex-wrap gap-x-4 gap-y-1">
+                            {% for ds in chartDatasets %}
+                                <span class="flex items-center gap-1.5 text-xs text-base-content/60">
+              <span class="w-2.5 h-2.5 rounded-sm inline-block shrink-0"
+                    style="background-color: {{ ds.color }};"></span>
+              {{ ds.store }}
+            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {# Canvas #}
+                    <div class="relative w-full" style="height: 260px;">
+                        <canvas id="priceHistoryChart"></canvas>
+                    </div>
+
+                </div>
+            </div>
+
+            {# ── CURRENT PRICES TABLE ── #}
+            <div class="card bg-base-100 shadow-sm overflow-hidden">
+                <div class="card-body p-5 sm:p-6 pb-0 gap-0">
+                    <h2 class="text-base font-semibold text-base-content mb-3">Current prices by store</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>Store</th>
+                            <th class="text-right">Price</th>
+                            <th class="text-right">vs. avg.</th>
+                            <th class="text-right">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for entry in currentPrices %}
+                            {% set diff = (entry.price - avgPrice)|number_format(2) %}
+                            <tr class="hover:bg-base-200/50">
+                                <td>
+                                    <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full inline-block shrink-0"
+                        style="background-color: {{ chartDatasets[loop.index0].color ?? '#888' }};"></span>
+                                        <span class="font-medium text-sm">{{ entry.store }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-right font-display font-bold text-base text-primary">
+                                    €{{ entry.price|number_format(2) }}
+                                </td>
+                                <td class="text-right text-sm">
+                                    {% if diff > 0 %}
+                                        <span class="text-error">+€{{ diff }}</span>
+                                    {% elseif diff < 0 %}
+                                        <span class="text-success">-€{{ diff|abs }}</span>
+                                    {% else %}
+                                        <span class="text-base-content/40">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                    {% if entry.lowest %}
+                                        <span class="badge badge-success badge-soft badge-sm">Lowest</span>
+                                    {% elseif entry.highest %}
+                                        <span class="badge badge-error badge-soft badge-sm">Highest</span>
+                                    {% else %}
+                                        <span class="badge badge-ghost badge-sm">Mid</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    {# ── CHART SCRIPT ── #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            const labels = {{ chartLabels|json_encode|raw }};
+            const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+            const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+            const tickC = isDark ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.40)';
+
+            const rawDatasets = {{ chartDatasets|json_encode|raw }};
+
+            const datasets = rawDatasets.map(ds => ({
+                label: ds.store,
+                data: ds.data,
+                borderColor: ds.color,
+                backgroundColor: 'transparent',
+                pointBackgroundColor: ds.color,
+                tension: 0.35,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                borderWidth: 2,
+            }));
+
+            new Chart(document.getElementById('priceHistoryChart'), {
+                type: 'line',
+                data: {labels, datasets},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {mode: 'index', intersect: false},
+                    plugins: {
+                        legend: {display: false},
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ' ' + ctx.dataset.label + ': €' + ctx.parsed.y.toFixed(2)
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {color: gridC},
+                            ticks: {color: tickC, font: {size: 11}}
+                        },
+                        y: {
+                            grid: {color: gridC},
+                            ticks: {color: tickC, font: {size: 11}, callback: v => '€' + v.toFixed(2)},
+                            min: 0.70,
+                            max: 1.40
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+
+{% endblock %}
