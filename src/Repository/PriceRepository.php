@@ -43,18 +43,18 @@ class PriceRepository extends ServiceEntityRepository
 
         if (!empty($startDate)) {
             $qb->andWhere('p.created_at >= :startDate')
-                ->setParameter('startDate', $startDate . ' 00:00:00');
+                ->setParameter('startDate', $startDate);
         }
 
         if (!empty($endDate)) {
             $qb->andWhere('p.created_at <= :endDate')
-                ->setParameter('endDate', $endDate . ' 23:59:59');
+                ->setParameter('endDate', $endDate);
         }
 
         return $qb;
     }
 
-    public function findPriceHistory(Grocery $grocery, ?\DateTime $date)
+    public function findPriceHistory(Grocery $grocery, ?\DateTimeImmutable $date)
     {
         $qb = $this->createQueryBuilder('p')
             ->innerJoin('p.grocery', 'grocery')

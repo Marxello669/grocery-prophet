@@ -31,7 +31,9 @@ final class PriceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $price->setCreatedAt(new \DateTimeImmutable());
+            if ($price->getCreatedAt() === null) {
+                $price->setCreatedAt(new \DateTimeImmutable('today'));
+            }
             $entityManager->persist($price);
             $entityManager->flush();
 

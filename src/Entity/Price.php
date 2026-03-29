@@ -21,7 +21,7 @@ class Price
     #[ORM\Column(type: 'string', enumType: ShopEnum::class)]
     private ?ShopEnum $shop = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'date_immutable')]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'prices')]

@@ -40,8 +40,8 @@ class PriceChart
     public function getChart(): Chart
     {
         $startDate = match ($this->timeframe) {
-            '1w' => new \DateTime('-7 days'),
-            '1m' => new \DateTime('-30 days'),
+            '1w' => new \DateTimeImmutable('-7 days 00:00:00'),
+            '1m' => new \DateTimeImmutable('-30 days 00:00:00'),
             default => null, // All time
         };
 
@@ -56,7 +56,7 @@ class PriceChart
         // Group prices by timestamp and shop
         $groupedPrices = [];
         foreach ($prices as $price) {
-            $date = $price->getCreatedAt()->format('M d, H:i');
+            $date = $price->getCreatedAt()->format('M d, Y');
             $shopKey = $price->getShop()->value;
             $groupedPrices[$date][$shopKey] = (float)$price->getValue();
 

@@ -84,7 +84,7 @@
 
         <section class="card bg-base-100 shadow-sm overflow-hidden">
             {# Table header #}
-            <div class="hidden sm:grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center
+            <div class="hidden sm:grid grid-cols-[2.5rem_1fr_9rem_6rem_9rem_0rem] gap-x-4 items-center
                   px-5 py-3 border-b border-base-300 text-xs font-semibold uppercase tracking-wider
                   text-base-content/40 select-none">
                 <span></span>
@@ -98,7 +98,7 @@
             <ul class="w-full flex flex-col" data-loading="hide">
                 {% for entry in this.entries %}
                     <li class="product-card">
-                        <div class="grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center
+                        <div class="grid grid-cols-[2.5rem_1fr_9rem_6rem_9rem_0rem] gap-x-4 items-center
                                           px-5 py-3.5 border-b border-base-200 group cursor-default">
 
                             {# Emoji #}
@@ -120,13 +120,13 @@
 
                             {# Date #}
                             <span class="text-xs text-base-content/60">
-                                {{ entry.createdAt|date('d/m/Y H:i') }}
+                                {{ entry.createdAt|date('d/m/Y') }}
                             </span>
 
                             {# Edit link #}
                             <div class="flex justify-end">
-                                <a href="{{ path('app_price_edit', {id: entry.id}) }}" class="btn btn-ghost btn-xs">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <a href="{{ path('app_price_edit', {id: entry.id}) }}" class="btn btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </a>
@@ -139,7 +139,7 @@
             {# Skeleton #}
             <ul class="w-full flex flex-col" data-loading="show">
                 {% for i in 1..5 %}
-                    <li class="grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
+                    <li class="grid grid-cols-[2.5rem_1fr_9rem_6rem_9rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
                         <div class="skeleton h-6 w-6 rounded-full"></div>
                         <div class="flex flex-col gap-2">
                             <div class="skeleton h-4 w-32"></div>
