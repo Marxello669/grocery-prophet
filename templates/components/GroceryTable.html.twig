@@ -33,7 +33,7 @@
         </section>
 
         {% if this.query is not empty or this.type is not null %}
-            <div id="active-filters" class="flex-wrap gap-2 items-center text-sm text-base-content/60">
+            <div id="active-filters" class="flex flex-wrap gap-2 items-center text-sm text-base-content/60">
                 <span class="font-medium">Active filters:</span>
                 {% if this.query is not empty %}
                     <span id="af-name" class="badge badge-primary badge-soft">{{ this.query }}</span>
@@ -42,6 +42,18 @@
                 {% if this.type is not null %}
                     <span id="af-type" class="badge badge-secondary badge-soft">{{ this.type.label }}</span>
                 {% endif %}
+
+                <button
+                    type="button"
+                    data-action="live#action"
+                    data-live-action-param="clearFilters"
+                    class="btn btn-ghost btn-xs gap-1 ml-auto text-error hover:bg-error/10"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Clear all
+                </button>
             </div>
         {% endif %}
 
@@ -89,7 +101,14 @@
                 <span class="text-5xl">🔍</span>
                 <p class="font-display text-xl text-base-content/60">No products found</p>
                 <p class="text-sm text-base-content/40">Try adjusting your filters</p>
-                <button id="empty-reset" class="btn btn-ghost btn-sm mt-2">↺ Clear filters</button>
+                <button
+                    type="button"
+                    data-action="live#action"
+                    data-live-action-param="clearFilters"
+                    class="btn btn-ghost btn-sm mt-2"
+                >
+                    ↺ Clear filters
+                </button>
             </div>
 
             {# List footer with count #}

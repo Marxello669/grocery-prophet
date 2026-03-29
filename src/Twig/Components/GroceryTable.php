@@ -80,6 +80,14 @@ final class GroceryTable
     }
 
     #[LiveAction]
+    public function clearFilters(): void
+    {
+        $this->query = "";
+        $this->type = null;
+        $this->page = 1;
+    }
+
+    #[LiveAction]
     public function nextPage(): void
     {
         if ($this->page < $this->getTotalPages()) {

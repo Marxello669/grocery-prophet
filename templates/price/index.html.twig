@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Price History{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm py-0">
+        <ul>
+            <li><a href="{{ path('app_index') }}">Products</a></li>
+            <li class="text-base-content/70">Price History</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    {{ component('PriceTable') }}
+{% endblock %}

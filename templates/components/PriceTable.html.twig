@@ -1,0 +1,211 @@
+<div{{ attributes }}>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+
+        <section class="card bg-base-100 shadow-sm">
+            <div class="card-body p-4 sm:p-5 flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row gap-3">
+
+                    {# Name search #}
+                    <label class="input input-bordered flex items-center gap-2 flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                        </svg>
+                        <input
+                            data-model="query"
+                            type="text"
+                            placeholder="Search by product name…"
+                            class="grow text-sm"
+                            autocomplete="off"
+                        />
+                    </label>
+
+                    {# Shop select #}
+                    <select data-model="shop" class="select select-bordered w-full sm:w-52 text-sm">
+                        <option value="">All shops</option>
+                        {% for shop in this.shops %}
+                            <option value="{{ shop.value }}">{{ shop.label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    {# Date filters #}
+                    <div class="flex items-center gap-2">
+                        <input
+                            data-model="startDate"
+                            type="date"
+                            class="input input-bordered text-sm w-full sm:w-auto"
+                            placeholder="From date"
+                        />
+                        <span class="text-base-content/40 hidden sm:inline">—</span>
+                        <input
+                            data-model="endDate"
+                            type="date"
+                            class="input input-bordered text-sm w-full sm:w-auto"
+                            placeholder="To date"
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if this.query is not empty or this.shop is not null or this.startDate is not empty or this.endDate is not empty %}
+            <div id="active-filters" class="flex flex-wrap gap-2 items-center text-sm text-base-content/60">
+                <span class="font-medium">Active filters:</span>
+                {% if this.query is not empty %}
+                    <span id="af-name" class="badge badge-primary badge-soft">{{ this.query }}</span>
+                {% endif %}
+
+                {% if this.shop is not null %}
+                    <span id="af-shop" class="badge badge-secondary badge-soft">{{ this.shop.label }}</span>
+                {% endif %}
+
+                {% if this.startDate is not empty %}
+                    <span id="af-start" class="badge badge-accent badge-soft">From: {{ this.startDate|date('d/m/Y') }}</span>
+                {% endif %}
+
+                {% if this.endDate is not empty %}
+                    <span id="af-end" class="badge badge-accent badge-soft">To: {{ this.endDate|date('d/m/Y') }}</span>
+                {% endif %}
+
+                <button
+                    type="button"
+                    data-action="live#action"
+                    data-live-action-param="clearFilters"
+                    class="btn btn-ghost btn-xs gap-1 ml-auto text-error hover:bg-error/10"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Clear all
+                </button>
+            </div>
+        {% endif %}
+
+        <section class="card bg-base-100 shadow-sm overflow-hidden">
+            {# Table header #}
+            <div class="hidden sm:grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center
+                  px-5 py-3 border-b border-base-300 text-xs font-semibold uppercase tracking-wider
+                  text-base-content/40 select-none">
+                <span></span>
+                <span>Product</span>
+                <span>Shop</span>
+                <span class="text-right">Price</span>
+                <span>Date</span>
+                <span class="text-right"></span>
+            </div>
+
+            <ul class="w-full flex flex-col" data-loading="hide">
+                {% for entry in this.entries %}
+                    <li class="product-card">
+                        <div class="grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center
+                                          px-5 py-3.5 border-b border-base-200 group cursor-default">
+
+                            {# Emoji #}
+                            <span class="text-2xl leading-none select-none" aria-hidden="true">{{ entry.grocery.type.emoji }}</span>
+
+                            {# Name #}
+                            <div>
+                                <a href="{{ path('app_grocery_show', {id: entry.grocery.id}) }}"
+                                   class="hover:underline text-sm font-semibold text-base-content leading-tight">{{ entry.grocery.name }}</a>
+                            </div>
+
+                            {# Shop #}
+                            <span class="badge badge-ghost badge-sm">{{ entry.shop.label }}</span>
+
+                            {# Price #}
+                            <span class="font-display text-base font-bold text-primary text-right">
+                                {{ entry.value|number_format(2, ',', '.') }}€
+                            </span>
+
+                            {# Date #}
+                            <span class="text-xs text-base-content/60">
+                                {{ entry.createdAt|date('d/m/Y H:i') }}
+                            </span>
+
+                            {# Edit link #}
+                            <div class="flex justify-end">
+                                <a href="{{ path('app_price_edit', {id: entry.id}) }}" class="btn btn-ghost btn-xs">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {# Skeleton #}
+            <ul class="w-full flex flex-col" data-loading="show">
+                {% for i in 1..5 %}
+                    <li class="grid grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
+                        <div class="skeleton h-6 w-6 rounded-full"></div>
+                        <div class="flex flex-col gap-2">
+                            <div class="skeleton h-4 w-32"></div>
+                        </div>
+                        <div class="skeleton h-4 w-20"></div>
+                        <div class="skeleton h-4 w-16 justify-self-end"></div>
+                        <div class="skeleton h-4 w-24"></div>
+                        <div class="skeleton h-6 w-1 rounded-full justify-self-end"></div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {# Empty state #}
+            {% if this.entries.count == 0 %}
+            <div id="empty-state" class="flex flex-col items-center justify-center py-20 text-center gap-3">
+                <span class="text-5xl">🔍</span>
+                <p class="font-display text-xl text-base-content/60">No prices found</p>
+                <p class="text-sm text-base-content/40">Try adjusting your filters</p>
+                <button
+                    type="button"
+                    data-action="live#action"
+                    data-live-action-param="clearFilters"
+                    class="btn btn-ghost btn-sm mt-2"
+                >
+                    ↺ Clear filters
+                </button>
+            </div>
+            {% endif %}
+
+            {# List footer with count #}
+            <div id="list-footer"
+                 class="px-5 py-3 flex items-center justify-between text-xs text-base-content/40 border-t border-base-200">
+                <span id="footer-count">{{ this.entries.count }} records</span>
+
+                <div class="join">
+                    <button
+                        type="button"
+                        data-action="live#action"
+                        data-live-action-param="previousPage"
+                        class="join-item btn btn-sm {{ this.page <= 1 ? 'btn-disabled' : '' }}"
+                    >
+                        <
+                    </button>
+
+                    <button class="join-item btn btn-sm">{{ this.page }}</button>
+
+                    <button
+                        type="button"
+                        data-action="live#action"
+                        data-live-action-param="nextPage"
+                        class="join-item btn btn-sm {{ this.page >= this.totalPages ? 'btn-disabled' : '' }}"
+                    >
+                        >
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-row justify-end">
+            <a href="{{ path('app_price_new') }}" class="btn btn-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span class="hidden sm:inline">Record price</span>
+            </a>
+        </div>
+    </div>
+</div>

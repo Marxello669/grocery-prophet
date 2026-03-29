@@ -14,6 +14,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/price')]
 final class PriceController extends AbstractController
 {
+    #[Route('/', name: 'app_price_index', methods: ['GET'])]
+    public function index(): Response
+    {
+        return $this->render('price/index.html.twig');
+    }
+
     #[Route('/new/{grocery}', name: 'app_price_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ?Grocery $grocery = null): Response
     {

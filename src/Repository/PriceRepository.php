@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Grocery;
 use App\Entity\Price;
+use App\Enum\ShopEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,6 +17,41 @@ class PriceRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Price::class);
+    }
+
+    public function getPagination(
+        string    $query,
+        int       $offset,
+        int       $quantity,
+        ?ShopEnum $shop = null,
+        ?string   $startDate = null,
+        ?string   $endDate = null
+    ): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->innerJoin('p.grocery', 'g')
+            ->where('g.name LIKE :query')
+            ->setParameter('query', "%$query%")
+            ->setFirstResult($offset)
+            ->setMaxResults($quantity)
+            ->orderBy('p.created_at', 'DESC');
+
+        if (!is_null($shop)) {
+            $qb->andWhere('p.shop = :shop')
+                ->setParameter('shop', $shop->value);
+        }
+
+        if (!empty($startDate)) {
+            $qb->andWhere('p.created_at >= :startDate')
+                ->setParameter('startDate', $startDate . ' 00:00:00');
+        }
+
+        if (!empty($endDate)) {
+            $qb->andWhere('p.created_at <= :endDate')
+                ->setParameter('endDate', $endDate . ' 23:59:59');
+        }
+
+        return $qb;
     }
 
     public function findPriceHistory(Grocery $grocery, ?\DateTime $date)
