@@ -27,11 +27,13 @@ class GroceryRepository extends ServiceEntityRepository
     ): QueryBuilder
     {
         $qb = $this->createQueryBuilder('g')
+            ->leftJoin('g.prices', 'p')
             ->where('g.name LIKE :query')
             ->setParameter('query', "%$query%")
             ->setFirstResult($offset)
             ->setMaxResults($quantity)
-            ->orderBy('g.name', 'DESC');
+            ->orderBy('p.value', 'DESC')
+            ->addOrderBy('g.name', 'ASC');
 
         if (!is_null($type)) {
             $qb->andWhere('g.type = :type')

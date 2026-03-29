@@ -59,7 +59,7 @@ final class GroceryTable
 
         $query = $this->groceryRepository->getPagination($this->query, $offset, $this->quantity, $this->type);
 
-        return new Paginator($query);
+        return new Paginator($query, true);
     }
 
     public function getTotalPages(): int
