@@ -1,13 +1,7 @@
-{# ── Modal toggle (hidden checkbox — DaisyUI pattern) ── #}
-<input type="checkbox" id="grocery-modal" class="modal-toggle"
-    {{ open_modal ?? false ? 'checked' : '' }} />
+<input type="checkbox" id="grocery-modal" class="modal-toggle" {{ open_modal ?? false ? 'checked' : '' }} />
 
-{# ── Modal overlay + dialog ── #}
 <div class="modal modal-bottom sm:modal-middle" role="dialog" aria-labelledby="grocery-modal-title">
-
     <div class="modal-box w-full max-w-md p-0 overflow-visible">
-
-        {# ── Modal header ── #}
         <div class="flex items-center gap-3 px-6 pt-6 pb-4 border-b border-base-300">
             <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary"
@@ -32,130 +26,8 @@
             </label>
         </div>
 
-        {# ── Flash messages (shown inside modal when redirected back with errors) ── #}
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div role="alert"
-                     class="alert alert-{{ label == 'error' ? 'error' : (label == 'warning' ? 'warning' : 'success') }}
-                    alert-soft alert-horizontal mx-6 mt-4 py-2">
-                    {% if label == 'success' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% elseif label == 'error' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% endif %}
-                    <span class="text-sm">{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endfor %}
-
-        {# ── Form body ── #}
-        {{ form_start(form, {
-            attr: { class: 'flex flex-col gap-5 px-6 py-5', novalidate: 'novalidate' }
-        }) }}
-
-        {# Name field #}
-        <div class="flex flex-col gap-1.5">
-            {{ form_label(form.name, 'Product name', {
-                label_attr: { class: 'text-sm font-medium text-base-content' }
-            }) }}
-
-            <label class="input input-bordered flex items-center gap-2
-                      {{ form.name.vars.valid is defined and not form.name.vars.valid ? 'input-error' : '' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0"
-                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
-                </svg>
-                {{ form_widget(form.name, {
-                    attr: {
-                        class:        'grow bg-transparent outline-none text-sm',
-                        placeholder:  'e.g. Whole Milk',
-                        autocomplete: 'off'
-                    }
-                }) }}
-            </label>
-
-            {% if form.name.vars.errors|length > 0 %}
-                <div class="flex items-center gap-1.5 text-error text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
-                         viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    {{ form_errors(form.name) }}
-                </div>
-            {% endif %}
-
-            <p class="text-xs text-base-content/40">The display name of the grocery item.</p>
-        </div>
-
-        {# Type field (GroceryEnum) #}
-        <div class="flex flex-col gap-1.5">
-            {{ form_label(form.type, 'Category', {
-                label_attr: { class: 'text-sm font-medium text-base-content' }
-            }) }}
-
-            {{ form_widget(form.type, {
-                attr: {
-                    class: 'select select-bordered w-full text-sm'
-                    ~ (form.type.vars.valid is defined and not form.type.vars.valid ? ' select-error' : '')
-                }
-            }) }}
-
-            {% if form.type.vars.errors|length > 0 %}
-                <div class="flex items-center gap-1.5 text-error text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
-                         viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    {{ form_errors(form.type) }}
-                </div>
-            {% endif %}
-
-            <p class="text-xs text-base-content/40">Select the product category from the list.</p>
-        </div>
-
-        {# Global form errors #}
-        {% if form.vars.errors|length > 0 %}
-            <div role="alert" class="alert alert-error alert-soft py-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0"
-                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <div class="text-sm">{{ form_errors(form) }}</div>
-            </div>
-        {% endif %}
-
-        {# ── Modal actions ── #}
-        <div class="flex justify-end gap-2 pt-2 border-t border-base-300">
-            <label for="grocery-modal" class="btn btn-ghost btn-sm">
-                Cancel
-            </label>
-            <button type="submit" class="btn btn-primary btn-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                </svg>
-                Add product
-            </button>
-        </div>
-
-        {{ form_end(form) }}
-
+        {{ include('grocery/_new_form.html.twig', {form: form}) }}
     </div>
 
-    {# Click-outside overlay closes the modal #}
     <label class="modal-backdrop" for="grocery-modal" aria-label="Close modal"></label>
 </div>
