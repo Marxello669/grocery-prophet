@@ -100,7 +100,6 @@
         } %}
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
-
             {# ── FILTER PANEL ── #}
             <section class="card bg-base-100 shadow-sm">
                 <div class="card-body p-4 sm:p-5 flex flex-col gap-4">
@@ -153,7 +152,7 @@
             <section class="card bg-base-100 shadow-sm overflow-hidden">
 
                 {# Table header #}
-                <div class="hidden sm:grid grid-cols-[2.5rem_1fr_9rem_6rem_5rem] gap-x-4 items-center
+                <div class="hidden sm:grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center
                   px-5 py-3 border-b border-base-300 text-xs font-semibold uppercase tracking-wider
                   text-base-content/40 select-none">
                     <span></span>
@@ -171,7 +170,7 @@
                             data-name="{{ product.name|lower }}"
                             data-type="{{ product.type.value }}"
                         >
-                            <div class="grid grid-cols-[2.5rem_1fr_9rem_6rem_5rem] gap-x-4 items-center
+                            <div class="grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center
                       px-5 py-3.5 border-b border-base-200 group cursor-default">
 
                                 {# Emoji #}
@@ -189,12 +188,7 @@
                                 {# Price #}
                                 <span class="font-display text-base font-bold text-primary text-right">-€</span>
 
-                                {# Stock #}
-                                <div class="flex justify-end">
-                                    <a href="{{ path('app_price_new_with_grocery', {grocery: product.id}) }}"
-                                       class="btn btn-primary btn-sm sm:flex">+</a>
-                                </div>
-
+                                <a href="{{ path('app_price_new', {grocery: product.id}) }}" class="btn btn-primary btn-sm sm:flex">+</a>
                             </div>
                         </li>
                     {% endfor %}
@@ -216,7 +210,6 @@
                 </div>
 
             </section>
-
         </div>
     </div>
 

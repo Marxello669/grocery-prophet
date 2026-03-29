@@ -16,7 +16,7 @@ class PriceType extends AbstractType
         $builder
             ->add('value')
             ->add('shop')
-            ->add('grocery', EntityType::class, ['class' => Grocery::class]);
+            ->add('grocery', EntityType::class, ['class' => Grocery::class, 'choice_label' => 'name']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
