@@ -79,4 +79,24 @@ final class GroceryController extends AbstractController
             'currentPrices' => $currentPrices,
         ]);
     }
+
+    #[Route('/{id:grocery}/edit', name: 'app_grocery_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Grocery $grocery, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(GroceryType::class, $grocery);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Grocery updated successfully!');
+
+            return $this->redirectToRoute('app_grocery_show', ['grocery' => $grocery->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('grocery/edit.html.twig', [
+            'grocery' => $grocery,
+            'form' => $form,
+        ]);
+    }
 }
