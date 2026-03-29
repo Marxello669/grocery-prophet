@@ -22,7 +22,7 @@
     {% set avgPrice = pricesCount > 0 ? (currentPrices|reduce((carry, p) => carry + p.price|number_format(2), 0) / pricesCount)|number_format(2) : 0 %}
     {% set spread = (highestPrice and lowestPrice) ? (highestPrice.price - lowestPrice.price)|number_format(2) : 0 %}
 
-    <div class="min-h-screen bg-base-200" {{ stimulus_controller('symfony--ux-chartjs--chart') }}>
+    <div class="min-h-screen bg-base-200">
         <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
             {# ── HERO CARD ── #}
             <div class="card bg-base-100 shadow-sm">

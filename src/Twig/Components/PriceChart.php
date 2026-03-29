@@ -8,6 +8,7 @@ use App\Repository\PriceRepository;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
@@ -18,7 +19,13 @@ class PriceChart
     use DefaultActionTrait;
 
     #[LiveProp(writable: true)]
-    public string $timeFrame = '1m'; // Default to 1 month
+    public string $timeframe = '1m'; // Default to 1 month
+
+    #[LiveAction]
+    public function setTimeframe(#[LiveArg] string $timeframe): void
+    {
+        $this->timeframe = $timeframe;
+    }
 
     #[LiveProp]
     public Grocery $grocery;
@@ -32,7 +39,7 @@ class PriceChart
 
     public function getChart(): Chart
     {
-        $startDate = match ($this->timeFrame) {
+        $startDate = match ($this->timeframe) {
             '1w' => new \DateTime('-7 days'),
             '1m' => new \DateTime('-30 days'),
             default => null, // All time

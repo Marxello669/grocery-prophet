@@ -2,8 +2,11 @@
 
 namespace App\Twig\Components;
 
+use App\Entity\Grocery;
+use App\Entity\Price;
 use App\Enum\GroceryEnum;
 use App\Repository\GroceryRepository;
+use App\Repository\PriceRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -27,8 +30,16 @@ final class GroceryTable
     #[LiveProp(writable: true)]
     public ?GroceryEnum $type = null;
 
-    public function __construct(private readonly GroceryRepository $groceryRepository)
+    public function __construct(
+        private readonly GroceryRepository $groceryRepository,
+        private readonly PriceRepository   $priceRepository
+    )
     {
+    }
+
+    public function getLowestPrice(Grocery $grocery): ?Price
+    {
+        return $this->priceRepository->findLowestCurrentPriceForGrocery($grocery);
     }
 
     /**

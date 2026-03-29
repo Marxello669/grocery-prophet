@@ -26,7 +26,7 @@ class GroceryRepository extends ServiceEntityRepository
         ?GroceryEnum $type = null
     ): QueryBuilder
     {
-        $query = $this->createQueryBuilder('g')
+        $qb = $this->createQueryBuilder('g')
             ->where('g.name LIKE :query')
             ->setParameter('query', "%$query%")
             ->setFirstResult($offset)
@@ -34,10 +34,10 @@ class GroceryRepository extends ServiceEntityRepository
             ->orderBy('g.name', 'DESC');
 
         if (!is_null($type)) {
-            $query->andWhere('g.type = :type')
+            $qb->andWhere('g.type = :type')
                 ->setParameter('type', $type->value);
         }
 
-        return $query;
+        return $qb;
     }
 }

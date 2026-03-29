@@ -14,9 +14,10 @@
                 {% for label, value in {'1W': '1w', '1M': '1m', 'ALL': 'all'} %}
                     <button
                         type="button"
-                        data-action="live#update"
-                        data-live-update-param="timeFrame:{{ value }}"
-                        class="tab tab-sm {{ this.timeFrame == value ? 'tab-active !bg-primary !text-primary-content' : '' }}"
+                        data-action="live#action"
+                        data-live-action-param="setTimeframe"
+                        data-live-timeframe-param="{{ value }}"
+                        class="tab tab-sm {{ this.timeframe == value ? 'tab-active !bg-primary !text-primary-content' : '' }}"
                     >
                         {{ label }}
                     </button>
@@ -25,7 +26,7 @@
         </div>
 
         {# Chart Area #}
-        <div class="relative w-full h-[300px]">
+        <div class="relative w-full h-[150px]">
             {# The Real Chart #}
             <div data-loading="hide">
                 {{ render_chart(this.chart) }}
