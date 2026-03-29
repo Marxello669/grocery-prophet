@@ -5,26 +5,15 @@ namespace App\Controller;
 use App\Entity\Grocery;
 use App\Entity\Price;
 use App\Form\PriceType;
-use App\Form\PriceWithGroceryType;
-use App\Repository\PriceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/price')]
 final class PriceController extends AbstractController
 {
-    #[Route(name: 'app_price_index', methods: ['GET'])]
-    public function index(PriceRepository $priceRepository): Response
-    {
-        return $this->render('price/index.html.twig', [
-            'prices' => $priceRepository->findAll(),
-        ]);
-    }
-
     #[Route('/new/{grocery}', name: 'app_price_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ?Grocery $grocery = null): Response
     {
@@ -45,14 +34,6 @@ final class PriceController extends AbstractController
             'price' => $price,
             'form' => $form,
             'grocery' => $grocery,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_price_show', methods: ['GET'])]
-    public function show(Price $price): Response
-    {
-        return $this->render('price/show.html.twig', [
-            'price' => $price,
         ]);
     }
 

@@ -76,7 +76,7 @@
 
             {# ── CONTEXT CARD (shown when a product is pre-selected) ── #}
             {% if grocery is not null %}
-                <div class="card bg-base-100 shadow-sm">
+                <a href="{{ path('app_grocery_show', { id: grocery.id }) }}" class="card bg-base-100 hover:bg-base-200 shadow-sm">
                     <div class="card-body p-4 flex flex-row items-center gap-4">
                         <div
                             class="w-11 h-11 rounded-xl bg-base-200 flex items-center justify-center text-2xl shrink-0 select-none">
@@ -85,14 +85,11 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-base-content truncate">{{ grocery.name }}</p>
                             <p class="text-xs text-base-content/50 mt-0.5">
-                                {% if grocery.type %} · <span
-                                    class="badge badge-ghost badge-xs align-middle">{{ grocery.type.label }}</span>{% endif %}
+                                <span class="badge badge-ghost badge-xs align-middle">{{ grocery.type.label }}</span>
                             </p>
                         </div>
-                        <a href="{{ path('app_grocery_show', { id: grocery.id }) }}"
-                           class="btn btn-ghost btn-xs shrink-0">View profile</a>
                     </div>
-                </div>
+                </a>
             {% endif %}
 
             {# ── FORM CARD ── #}
