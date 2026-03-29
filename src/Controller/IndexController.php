@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Grocery;
-use App\Enum\GroceryEnum;
 use App\Form\GroceryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,8 +15,6 @@ final class IndexController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $groceries = $entityManager->getRepository(Grocery::class)->findAll();
-
         $grocery = new Grocery();
         $form = $this->createForm(GroceryType::class, $grocery);
         $form->handleRequest($request);
@@ -30,8 +27,6 @@ final class IndexController extends AbstractController
         }
 
         return $this->render('index/index.html.twig', [
-            'groceries' => $groceries,
-            'types' => GroceryEnum::cases(),
             'grocery_form' => $form->createView(),
         ]);
     }
