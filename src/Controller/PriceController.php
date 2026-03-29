@@ -28,6 +28,8 @@ final class PriceController extends AbstractController
             $entityManager->persist($price);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Price added successfully!');
+
             return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -46,6 +48,8 @@ final class PriceController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'Price updated successfully!');
 
             return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }

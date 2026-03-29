@@ -31,8 +31,8 @@ class PriceChart
     public Grocery $grocery;
 
     public function __construct(
-        private PriceRepository       $repository,
-        private ChartBuilderInterface $chartBuilder
+        private readonly PriceRepository $repository,
+        private readonly ChartBuilderInterface $chartBuilder
     )
     {
     }
@@ -51,13 +51,7 @@ class PriceChart
         $datasetsByShop = [];
 
         // Colors for different shops
-        $colors = [
-            'continente' => '#ea2d2d',
-            'rei_dos_precos' => '#ffcc00',
-            'canario' => '#32cd32',
-            'lidl' => '#0050aa',
-            'pingo_doce' => '#00843d',
-        ];
+        $colors = ShopEnum::colors();
 
         // Group prices by timestamp and shop
         $groupedPrices = [];
@@ -86,8 +80,8 @@ class PriceChart
                     $shop = ShopEnum::from($shopKey);
                     $datasetsByShop[$shopKey] = [
                         'label' => $shop->label(),
-                        'borderColor' => $colors[$shopKey] ?? '#999',
-                        'backgroundColor' => ($colors[$shopKey] ?? '#999') . '33',
+                        'borderColor' => $colors[$shopKey],
+                        'backgroundColor' => ($colors[$shopKey]) . '33',
                         'data' => array_merge(array_fill(0, array_search($date, $labels), null), [$value]),
                         'tension' => 0.3,
                         'fill' => false,

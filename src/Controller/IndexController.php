@@ -23,6 +23,8 @@ final class IndexController extends AbstractController
             $entityManager->persist($grocery);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Grocery created successfully!');
+
             return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }
 

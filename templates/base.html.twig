@@ -58,30 +58,31 @@
 
         </header>
 
-        {# ── FLASH MESSAGES (global, rendered above every page body) ── #}
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div role="alert"
-                     class="alert alert-soft alert-horizontal
-                            alert-{{ label == 'error' ? 'error' : (label == 'warning' ? 'warning' : 'success') }}
-                            mx-4 sm:mx-6 mt-4 max-w-5xl">
-                    {% if label == 'success' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% elseif label == 'error' %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    {% endif %}
-                    <span>{{ message }}</span>
-                </div>
+        {# ── FLASH MESSAGES (global, rendered as toast notifications above content) ── #}
+        <div class="toast toast-top toast-center z-50 p-4 pt-16 pointer-events-none">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div role="alert"
+                         class="alert alert-soft shadow-lg pointer-events-auto mb-2 min-w-[20rem]
+                                alert-{{ label == 'error' ? 'error' : (label == 'warning' ? 'warning' : 'success') }}">
+                        {% if label == 'success' %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        {% elseif label == 'error' %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
+        </div>
 
         {# ── PAGE BODY ── #}
         <main class="flex-1">

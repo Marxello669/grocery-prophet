@@ -28,6 +28,8 @@ final class GroceryController extends AbstractController
             $entityManager->persist($grocery);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Grocery created successfully!');
+
             return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -55,11 +57,9 @@ final class GroceryController extends AbstractController
 
         $minPrice = null;
         $maxPrice = null;
-        $sumPrice = 0;
 
         foreach ($latestPricesByShop as $price) {
             $val = (float)$price->getValue();
-            $sumPrice += $val;
             if ($minPrice === null || $val < $minPrice) $minPrice = $val;
             if ($maxPrice === null || $val > $maxPrice) $maxPrice = $val;
         }
@@ -67,11 +67,10 @@ final class GroceryController extends AbstractController
         foreach ($latestPricesByShop as $price) {
             $val = (float)$price->getValue();
             $currentPrices[] = [
-                'store' => $price->getShop()->label(),
                 'price' => $val,
                 'lowest' => $val === $minPrice,
                 'highest' => $val === $maxPrice,
-                'shop' => $price->getShop()->value,
+                'shop' => $price->getShop(),
             ];
         }
 

@@ -54,7 +54,7 @@
                               </span>
 
                                 <span
-                                    class="badge badge-ghost badge-sm align-middle">{{ lowestPrice.store|default('No store data') }}</span>
+                                    class="badge badge-ghost badge-sm align-middle">{{ lowestPrice.shop.label|default('No shop data') }}</span>
                             </div>
                         </div>
 
@@ -65,16 +65,16 @@
             {# ── STAT TILES ── #}
             <div class="grid grid-cols-3 gap-3">
                 <div class="bg-base-100 rounded-xl p-4 shadow-sm">
-                    <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Stores</p>
+                    <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Shops</p>
                     <p class="text-2xl font-bold text-base-content mt-1">{{ currentPrices|length }}</p>
                 </div>
                 <div class="bg-base-100 rounded-xl p-4 shadow-sm">
                     <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Avg. price</p>
-                    <p class="text-2xl font-bold text-base-content mt-1">€{{ avgPrice }}</p>
+                    <p class="text-2xl font-bold text-base-content mt-1">{{ avgPrice }}€</p>
                 </div>
                 <div class="bg-base-100 rounded-xl p-4 shadow-sm">
                     <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Spread</p>
-                    <p class="text-2xl font-bold text-base-content mt-1">€{{ spread }}</p>
+                    <p class="text-2xl font-bold text-base-content mt-1">{{ spread }}€</p>
                 </div>
             </div>
 
@@ -90,13 +90,13 @@
             {# ── CURRENT PRICES TABLE ── #}
             <div class="card bg-base-100 shadow-sm overflow-hidden">
                 <div class="card-body p-5 sm:p-6 pb-0 gap-0">
-                    <h2 class="text-base font-semibold text-base-content mb-3">Current prices by store</h2>
+                    <h2 class="text-base font-semibold text-base-content mb-3">Current prices by shop</h2>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="table table-sm">
                         <thead>
                         <tr>
-                            <th>Store</th>
+                            <th>Shop</th>
                             <th class="text-right">Price</th>
                             <th class="text-right">vs. avg.</th>
                             <th class="text-right">Status</th>
@@ -108,27 +108,19 @@
                             <tr class="hover:bg-base-200/50">
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        {# Shop color fallback #}
-                                        {% set shopColors = {
-                                            'continente': '#ea2d2d',
-                                            'rei_dos_precos': '#ffcc00',
-                                            'canario': '#32cd32',
-                                            'lidl': '#0050aa',
-                                            'pingo_doce': '#00843d',
-                                        } %}
                                         <span class="w-2 h-2 rounded-full inline-block shrink-0"
-                                              style="background-color: {{ shopColors[entry.shop|default('')] ?? '#888' }};"></span>
-                                        <span class="font-medium text-sm">{{ entry.store }}</span>
+                                              style="background-color: {{ entry.shop.color }};"></span>
+                                        <span class="font-medium text-sm">{{ entry.shop.label }}</span>
                                     </div>
                                 </td>
                                 <td class="text-right font-display font-bold text-base text-primary">
-                                    €{{ entry.price|number_format(2) }}
+                                    {{ entry.price|number_format(2) }}€
                                 </td>
                                 <td class="text-right text-sm">
                                     {% if diff > 0 %}
-                                        <span class="text-error">+€{{ diff }}</span>
+                                        <span class="text-error">+{{ diff }}€</span>
                                     {% elseif diff < 0 %}
-                                        <span class="text-success">-€{{ diff|abs }}</span>
+                                        <span class="text-success">-{{ diff|abs }}€</span>
                                     {% else %}
                                         <span class="text-base-content/40">—</span>
                                     {% endif %}
