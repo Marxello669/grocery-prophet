@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Grocery;
 use App\Enum\GroceryEnum;
+use App\Enum\UnitEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,7 +22,12 @@ class GroceryType extends AbstractType
             ->add('type', EnumType::class, [
                 'class' => GroceryEnum::class,
                 'choice_label' => 'label',
-                'placeholder' => 'Grocery Type'
+                'placeholder' => 'Chose a grocery type'
+            ])
+            ->add('unit', EnumType::class, [
+                'class' => UnitEnum::class,
+                'choice_label' => 'label',
+                'placeholder' => 'Chose a unit'
             ]);
     }
 

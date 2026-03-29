@@ -16,7 +16,7 @@
 
         {# Price #}
         <span class="font-display text-base font-bold text-primary text-right">
-            {{ lowestPrice ? (lowestPrice.value|number_format(2, ',', '.')) ~ '€' : '-' }}
+            {{ lowestPrice ? (lowestPrice.value|number_format(2, ',', '.')) ~ '€'  : '-' }} / {{ entry.unit.label }}
         </span>
 
         {# Shop #}

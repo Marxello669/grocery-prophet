@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\GroceryEnum;
+use App\Enum\UnitEnum;
 use App\Repository\GroceryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +22,9 @@ class Grocery
 
     #[ORM\Column(type: 'string', enumType: GroceryEnum::class)]
     private ?GroceryEnum $type = null;
+
+    #[ORM\Column(enumType: UnitEnum::class)]
+    private ?UnitEnum $unit = null;
 
     /**
      * @var Collection<int, Price>
@@ -88,6 +92,18 @@ class Grocery
                 $price->setGrocery(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnit(): ?UnitEnum
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(UnitEnum $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }

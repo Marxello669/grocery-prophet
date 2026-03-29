@@ -16,4 +16,16 @@ enum UnitEnum: string
             self::unit => "Unidade",
         };
     }
+
+    /**
+     * @return string[]
+     */
+    public function getSubUnits(): array
+    {
+        return match ($this) {
+            self::kg => ["Kg", "g", "mg"],
+            self::l => ["L", "ml"],
+            self::unit => ["Unidade"],
+        };
+    }
 }

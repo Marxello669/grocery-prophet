@@ -4,7 +4,7 @@ namespace App\Enum;
 
 enum GroceryEnum: string
 {
-    case meat = 'Carne';
+    case meat = 'meat';
     case beverage = 'beverage';
     case fruit = 'fruit';
     case fish = 'fish';
