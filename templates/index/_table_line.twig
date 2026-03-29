@@ -1,0 +1,27 @@
+<li href="{{ path('app_grocery_show', {id: entry.id}) }}"
+    class="product-card"
+    data-name="{{ entry.name|lower }}"
+    data-type="{{ entry.type.value }}"
+>
+    <div class="grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center
+                      px-5 py-3.5 border-b border-base-200 group cursor-default">
+
+        {# Emoji #}
+        <span class="text-2xl leading-none select-none" aria-hidden="true"> - </span>
+
+        {# Name #}
+        <div>
+            <a href="{{ path('app_grocery_show', {id: entry.id}) }}"
+               class="hover:underline text-sm font-semibold text-base-content leading-tight">{{ entry.name }}</a>
+        </div>
+
+        {# Type #}
+        <span class="badge badge-ghost badge-sm">{{ entry.type.label }}</span>
+
+        {# Price #}
+        <span class="font-display text-base font-bold text-primary text-right">-€</span>
+
+        <a href="{{ path('app_price_new', {grocery: entry.id}) }}"
+           class="btn btn-primary btn-sm sm:flex">+</a>
+    </div>
+</li>
