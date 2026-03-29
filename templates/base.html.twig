@@ -1,19 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Grocery Products{% endblock %} · Grocery</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛒</text></svg>">
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+        <style>
+            :root { --font-display: 'Fraunces', Georgia, serif; --font-body: 'DM Sans', system-ui, sans-serif; }
+            html  { font-family: var(--font-body); }
+            .font-display { font-family: var(--font-display); }
+        </style>
     {% endblock %}
 
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
-
 
     {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
     {% if frankenphpHotReload %}
@@ -22,10 +28,187 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
     {% endif %}
 </head>
-<body>
 
+<body class="min-h-screen bg-base-200">
 
-{% block body %}{% endblock %}
+<div class="drawer lg:drawer-open">
+    <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col min-h-screen">
+        <header class="bg-base-100 border-b border-base-300 sticky top-0 z-30 h-14 flex items-center px-4 gap-3">
+            <label for="main-drawer" class="btn btn-ghost btn-square btn-sm lg:hidden" aria-label="Open sidebar">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </label>
+
+            {# Page title / breadcrumb — child templates fill this block #}
+            <div class="flex-1 min-w-0">
+                {% block page_header %}
+                    {# Default: just the app name on pages that don't define this block #}
+                    <span class="font-display text-lg text-base-content">Grocery</span>
+                {% endblock %}
+            </div>
+
+            {# Right-side topbar actions — child templates fill this block #}
+            <div class="flex items-center gap-2 shrink-0">
+                {% block topbar_actions %}{% endblock %}
+            </div>
+
+        </header>
+
+        {# ── FLASH MESSAGES (global, rendered above every page body) ── #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div role="alert"
+                     class="alert alert-soft alert-horizontal
+                            alert-{{ label == 'error' ? 'error' : (label == 'warning' ? 'warning' : 'success') }}
+                            mx-4 sm:mx-6 mt-4 max-w-5xl">
+                    {% if label == 'success' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    {% elseif label == 'error' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {# ── PAGE BODY ── #}
+        <main class="flex-1">
+            {% block body %}{% endblock %}
+        </main>
+
+    </div>{# /drawer-content #}
+
+    {# ── SIDEBAR ── #}
+    <div class="drawer-side z-40">
+        <label for="main-drawer" aria-label="Close sidebar" class="drawer-overlay"></label>
+
+        <aside class="w-64 min-h-full bg-base-100 border-r border-base-300 flex flex-col">
+
+            {# Logo #}
+            <div class="h-14 flex items-center gap-2.5 px-5 border-b border-base-300 shrink-0">
+                <div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-content"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m5-9l2 9"/>
+                    </svg>
+                </div>
+                <span class="font-display text-lg text-base-content leading-none">Grocery</span>
+            </div>
+
+            {# Nav #}
+            <nav class="flex-1 overflow-y-auto p-3">
+                <ul class="menu menu-sm w-full p-0 gap-0.5">
+
+                    {# Helper macro — sets `active` class when the route matches #}
+                    {% set _route = app.request.attributes.get('_route') %}
+
+                    <li class="menu-title text-xs mt-1">Catalogue</li>
+
+                    <li>
+                        <a href="{{ path('app_index') }}"
+                           class="{{ _route == 'app_index' ? 'active' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                            </svg>
+                            Products
+                        </a>
+                    </li>
+
+                    <li class="menu-title text-xs mt-3">Manage</li>
+
+                    <li>
+                        <a href="{{ path('app_grocery_new') }}"
+                           class="{{ _route == 'app_grocery_new' ? 'active' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add product
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ path('app_price_new') }}"
+                           class="{{ _route starts with 'app_price' ? 'active' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Record price
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            {# Sidebar footer — theme toggle #}
+            <div class="p-3 border-t border-base-300 shrink-0">
+                <label class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-base-200
+                              cursor-pointer transition-colors text-sm text-base-content/60 select-none">
+                    <input type="checkbox" id="theme-toggle" class="hidden" />
+                    <span class="swap swap-rotate">
+                        {# Moon icon #}
+                        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+                        </svg>
+                        {# Sun icon — shown in dark mode #}
+                        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+                        </svg>
+                    </span>
+                    <span id="theme-label">Dark mode</span>
+                </label>
+            </div>
+
+        </aside>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        const toggle = document.getElementById('theme-toggle');
+        const label  = document.getElementById('theme-label');
+        const moon   = document.getElementById('icon-moon');
+        const sun    = document.getElementById('icon-sun');
+        const html   = document.documentElement;
+
+        function applyTheme(dark) {
+            html.setAttribute('data-theme', dark ? 'dark' : 'light');
+            toggle.checked = dark;
+            label.textContent = dark ? 'Light mode' : 'Dark mode';
+            moon.classList.toggle('hidden', dark);
+            sun.classList.toggle('hidden', !dark);
+        }
+
+        applyTheme(localStorage.getItem('theme') === 'dark');
+
+        toggle.addEventListener('change', function () {
+            localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+            applyTheme(this.checked);
+        });
+    })();
+</script>
 
 </body>
 </html>
