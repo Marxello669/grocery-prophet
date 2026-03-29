@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Grocery;
 use App\Entity\Price;
+use App\Form\PriceEditType;
 use App\Form\PriceType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +50,7 @@ final class PriceController extends AbstractController
     #[Route('/{id}/edit', name: 'app_price_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Price $price, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PriceType::class, $price);
+        $form = $this->createForm(PriceEditType::class, $price);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,12 +58,13 @@ final class PriceController extends AbstractController
 
             $this->addFlash('success', 'Price updated successfully!');
 
-            return $this->redirectToRoute('app_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_price_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('price/edit.html.twig', [
             'price' => $price,
             'form' => $form,
+            'grocery' => $price->getGrocery(),
         ]);
     }
 }
