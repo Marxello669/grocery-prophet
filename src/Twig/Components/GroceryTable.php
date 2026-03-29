@@ -15,7 +15,22 @@ final class GroceryTable
 {
     use DefaultActionTrait;
 
-    #[LiveProp]
+    #[LiveProp(writable: true)]
+    public ?string $query = "";
+
+    #[LiveProp(writable: true)]
+    public int $page = 1;
+
+    #[LiveProp(writable: true)]
+    public int $quantity = 5;
+
+    #[LiveProp(writable: true)]
+    public ?GroceryEnum $type = null;
+
+    public function __construct(private readonly GroceryRepository $groceryRepository)
+    {
+    }
+
     /**
      * @return GroceryEnum[]
      */
@@ -24,25 +39,14 @@ final class GroceryTable
         return GroceryEnum::cases();
     }
 
-    #[LiveProp(writable: true)]
-    public int $page = 1;
-
-    #[LiveProp(writable: true)]
-    public int $quantity = 2;
-
-    public function __construct(private GroceryRepository $groceryRepository)
-    {
-    }
 
     public function getEntries(): Paginator
     {
         $offset = ($this->page - 1) * $this->quantity;
 
-        $query = $this->groceryRepository->createQueryBuilder('p')
-            ->setFirstResult($offset)
-            ->setMaxResults($this->quantity)
-            ->orderBy('p.name', 'DESC')
-            ->getQuery();
+        $this->query = $this->query ?? "";
+
+        $query = $this->groceryRepository->getPagination($this->query, $offset, $this->quantity, $this->type);
 
         return new Paginator($query);
     }
@@ -83,7 +87,6 @@ final class GroceryTable
     #[LiveAction]
     public function setPage(int $page): void
     {
-        // Add custom validation logic here
         $this->page = max(1, min($page, $this->getTotalPages()));
     }
 }

@@ -1,7 +1,4 @@
 {
-    "babdev/pagerfanta-bundle": {
-        "version": "v4.6.0"
-    },
     "doctrine/deprecations": {
         "version": "1.1",
         "recipe": {
@@ -272,6 +269,9 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
+    },
+    "symfony/ux-chartjs": {
+        "version": "v2.34.0"
     },
     "symfony/ux-live-component": {
         "version": "2.34",

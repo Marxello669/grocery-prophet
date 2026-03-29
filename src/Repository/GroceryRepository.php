@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Grocery;
+use App\Enum\GroceryEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,5 +17,27 @@ class GroceryRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Grocery::class);
+    }
+
+    public function getPagination(
+        string       $query,
+        int          $offset,
+        int          $quantity,
+        ?GroceryEnum $type = null
+    ): QueryBuilder
+    {
+        $query = $this->createQueryBuilder('g')
+            ->where('g.name LIKE :query')
+            ->setParameter('query', "%$query%")
+            ->setFirstResult($offset)
+            ->setMaxResults($quantity)
+            ->orderBy('g.name', 'DESC');
+
+        if (!is_null($type)) {
+            $query->andWhere('g.type = :type')
+                ->setParameter('type', $type->value);
+        }
+
+        return $query;
     }
 }

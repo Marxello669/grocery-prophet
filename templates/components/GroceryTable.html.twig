@@ -1,10 +1,8 @@
 <div{{ attributes }}>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
-        {# ── FILTER PANEL ── #}
+
         <section class="card bg-base-100 shadow-sm">
             <div class="card-body p-4 sm:p-5 flex flex-col gap-4">
-
-                {# Row 1: name search + type select #}
                 <div class="flex flex-col sm:flex-row gap-3">
 
                     {# Name search #}
@@ -15,7 +13,7 @@
                                   d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                         </svg>
                         <input
-                            id="filter-name"
+                            data-model="query"
                             type="text"
                             placeholder="Search by name…"
                             class="grow text-sm"
@@ -24,31 +22,29 @@
                     </label>
 
                     {# Type select #}
-                    <select id="filter-type" class="select select-bordered w-full sm:w-52 text-sm">
+                    <select data-model="type" class="select select-bordered w-full sm:w-52 text-sm">
                         <option value="">All types</option>
                         {% for type in this.types %}
                             <option value="{{ type.value }}">{{ type.label }}</option>
                         {% endfor %}
                     </select>
-
-                    {# Reset button #}
-                    <button id="filter-reset"
-                            class="btn btn-ghost btn-outline btn-sm self-center sm:self-auto whitespace-nowrap">
-                        ↺ Reset
-                    </button>
-
                 </div>
             </div>
         </section>
 
-        {# ── ACTIVE FILTER SUMMARY ── #}
-        <div id="active-filters" class="hidden flex-wrap gap-2 items-center text-sm text-base-content/60">
-            <span class="font-medium">Active filters:</span>
-            <span id="af-name" class="badge badge-primary badge-soft hidden"></span>
-            <span id="af-type" class="badge badge-secondary badge-soft hidden"></span>
-        </div>
+        {% if this.query is not empty or this.type is not null %}
+            <div id="active-filters" class="flex-wrap gap-2 items-center text-sm text-base-content/60">
+                <span class="font-medium">Active filters:</span>
+                {% if this.query is not empty %}
+                    <span id="af-name" class="badge badge-primary badge-soft">{{ this.query }}</span>
+                {% endif %}
 
-        {# ── PRODUCT LIST ── #}
+                {% if this.type is not null %}
+                    <span id="af-type" class="badge badge-secondary badge-soft">{{ this.type.label }}</span>
+                {% endif %}
+            </div>
+        {% endif %}
+
         <section class="card bg-base-100 shadow-sm overflow-hidden">
 
             {# Table header #}
@@ -62,10 +58,25 @@
                 <span class="text-right"></span>
             </div>
 
-            {# Rows #}
-            <ul class="w-full flex flex-col">
+            <ul class="w-full flex flex-col" data-loading="hide">
                 {% for entry in this.entries %}
                     {{ include('index/_table_line.twig', {entry: entry}) }}
+                {% endfor %}
+            </ul>
+
+            {# Skeleton #}
+            <ul class="w-full flex flex-col" data-loading="show">
+                {% for i in 1..5 %}
+                    <li class="grid grid-cols-[2.5rem_1fr_9rem_6rem_2rem] gap-x-4 items-center px-5 py-4 border-b border-base-200/50">
+                        <div class="skeleton h-6 w-6 rounded-full"></div> {# Icon/Checkbox #}
+                        <div class="flex flex-col gap-2">
+                            <div class="skeleton h-4 w-32"></div> {# Title #}
+                            <div class="skeleton h-3 w-20 opacity-50"></div> {# Subtitle #}
+                        </div>
+                        <div class="skeleton h-4 w-20"></div> {# Type #}
+                        <div class="skeleton h-4 w-16 justify-self-end"></div> {# Price #}
+                        <div class="skeleton h-6 w-1 rounded-full justify-self-end"></div> {# Actions #}
+                    </li>
                 {% endfor %}
             </ul>
 
@@ -102,7 +113,8 @@
                             data-live-action-param="setPage"
                             data-live-page-param="1"
                             class="join-item btn btn-sm"
-                        >1</button>
+                        >1
+                        </button>
                         <button class="join-item btn btn-sm btn-disabled">...</button>
                     {% endif %}
 
