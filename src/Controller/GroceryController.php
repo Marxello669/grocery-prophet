@@ -91,7 +91,7 @@ final class GroceryController extends AbstractController
 
             $this->addFlash('success', 'Grocery updated successfully!');
 
-            return $this->redirectToRoute('app_grocery_show', ['grocery' => $grocery->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_grocery_show', ['id' => $grocery->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('grocery/edit.html.twig', [
