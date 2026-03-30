@@ -111,17 +111,17 @@
 
             {# Nav #}
             <nav class="flex-1 overflow-y-auto p-3">
-                <ul class="menu menu-sm w-full p-0 gap-0.5">
+                <ul class="menu menu-md w-full p-0 gap-1">
 
                     {# Helper macro — sets `active` class when the route matches #}
                     {% set _route = app.request.attributes.get('_route') %}
 
-                    <li class="menu-title text-xs mt-1">Catalogue</li>
+                    <li class="menu-title text-sm mt-2">Catalogue</li>
 
                     <li>
                         <a href="{{ path('app_index') }}"
                            class="{{ _route == 'app_index' or _route starts with 'app_grocery_show' or _route starts with 'app_grocery_edit' ? 'active' : '' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
@@ -133,7 +133,7 @@
                     <li>
                         <a href="{{ path('app_price_index') }}"
                            class="{{ _route == 'app_price_index' ? 'active' : '' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -142,12 +142,12 @@
                         </a>
                     </li>
 
-                    <li class="menu-title text-xs mt-3">Manage</li>
+                    <li class="menu-title text-sm mt-4">Manage</li>
 
                     <li>
                         <a href="{{ path('app_grocery_new') }}"
                            class="{{ _route == 'app_grocery_new' ? 'active' : '' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
@@ -158,7 +158,7 @@
                     <li>
                         <a href="{{ path('app_price_new') }}"
                            class="{{ _route == 'app_price_new' or _route == 'app_price_edit' ? 'active' : '' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -177,13 +177,13 @@
                     <input type="checkbox" id="theme-toggle" class="hidden" />
                     <span class="swap swap-rotate">
                         {# Moon icon #}
-                        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                   d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
                         </svg>
                         {# Sun icon — shown in dark mode #}
-                        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none"
+                        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                   d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
