@@ -101,29 +101,40 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="table table-sm">
-                        <thead>
+                        <thead class="hidden md:table-header-group">
                         <tr>
                             <th>Shop</th>
                             <th class="text-right">Price</th>
-                            <th class="text-right">vs. avg.</th>
+                            <th class="text-right hidden sm:table-cell">vs. avg.</th>
                             <th class="text-right">Status</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for entry in currentPrices %}
                             {% set diff = (entry.price - avgPrice)|number_format(2) %}
-                            <tr class="hover:bg-base-200/50">
-                                <td>
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full inline-block shrink-0"
-                                              style="background-color: {{ entry.shop.color }};"></span>
-                                        <span class="font-medium text-sm">{{ entry.shop.label }}</span>
+                            <tr class="hover:bg-base-200/50 flex flex-col md:table-row border-b border-base-200 md:border-none p-4 md:p-0 gap-2 md:gap-0">
+                                <td class="p-0 md:p-3">
+                                    <div class="flex items-center justify-between md:justify-start gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full inline-block shrink-0"
+                                                  style="background-color: {{ entry.shop.color }};"></span>
+                                            <span class="font-medium text-sm">{{ entry.shop.label }}</span>
+                                        </div>
+                                        <div class="md:hidden">
+                                            {% if entry.lowest %}
+                                                <span class="badge badge-success badge-soft badge-xs">Lowest</span>
+                                            {% elseif entry.highest %}
+                                                <span class="badge badge-error badge-soft badge-xs">Highest</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="text-right font-display font-bold text-base text-primary">
-                                    {{ entry.price|number_format(2) }}€
+                                <td class="text-right font-display font-bold text-base text-primary p-0 md:p-3 flex justify-between md:table-cell">
+                                    <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">Price</span>
+                                    <span>{{ entry.price|number_format(2) }}€</span>
                                 </td>
-                                <td class="text-right text-sm">
+                                <td class="text-right text-sm p-0 md:p-3 flex justify-between md:table-cell">
+                                    <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">vs. avg.</span>
                                     {% if diff > 0 %}
                                         <span class="text-error">+{{ diff }}€</span>
                                     {% elseif diff < 0 %}
@@ -132,7 +143,7 @@
                                         <span class="text-base-content/40">—</span>
                                     {% endif %}
                                 </td>
-                                <td class="text-right">
+                                <td class="text-right hidden md:table-cell">
                                     {% if entry.lowest %}
                                         <span class="badge badge-success badge-soft badge-sm">Lowest</span>
                                     {% elseif entry.highest %}
