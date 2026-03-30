@@ -8,6 +8,7 @@ enum GroceryEnum: string
     case beverage = 'beverage';
     case fruit = 'fruit';
     case fish = 'fish';
+    case rice_pasta_flour = "rice_pasta_flour";
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum GroceryEnum: string
             self::beverage => "Bebida",
             self::fruit => "Fruta",
             self::fish => "Peixe",
+            self::rice_pasta_flour => "Arroz, Esparguete e Farinha",
         };
     }
 
@@ -25,7 +27,8 @@ enum GroceryEnum: string
             self::meat => "🥩",
             self::beverage => "🧃",
             self::fruit => "🍎",
-            self::fish => "🐟"
+            self::fish => "🐟",
+            self::rice_pasta_flour => "-"
         };
     }
 }

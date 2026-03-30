@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\Price\NewDTO;
 use App\Entity\Grocery;
 use App\Entity\Price;
 use App\Form\PriceEditType;
@@ -24,16 +25,15 @@ final class PriceController extends AbstractController
     #[Route('/new/{grocery}', name: 'app_price_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ?Grocery $grocery = null): Response
     {
-        $price = new Price();
-        $price->setGrocery($grocery);
+        $newDTO = new NewDTO($grocery);
 
-        $form = $this->createForm(PriceType::class, $price);
+        $form = $this->createForm(PriceType::class, $newDTO);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($price->getCreatedAt() === null) {
-                $price->setCreatedAt(new \DateTimeImmutable('today'));
-            }
+
+            $price = $newDTO->toPrice();
+
             $entityManager->persist($price);
             $entityManager->flush();
 
@@ -43,8 +43,8 @@ final class PriceController extends AbstractController
         }
 
         return $this->render('price/new.html.twig', [
-            'price' => $price,
-            'form' => $form,
+            'dto' => $newDTO,
+            'form' => $form->createView(),
             'grocery' => $grocery,
         ]);
     }
