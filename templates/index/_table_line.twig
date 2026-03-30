@@ -1,5 +1,5 @@
 <li class="product-card">
-    <div class="grid grid-cols-1 md:grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-3 md:gap-x-4 items-center
+    <div class="grid grid-cols-1 md:grid-cols-[2.5rem_1fr_6rem_6rem_9rem_2rem] gap-3 md:gap-x-4 md:items-center
                       px-4 py-4 md:px-5 md:py-3.5 border-b border-base-200 group cursor-default">
 
         <div class="flex items-center gap-3 md:contents">
@@ -11,7 +11,7 @@
             {# Name #}
             <div class="flex-1 min-w-0">
                 <a href="{{ path('app_grocery_show', {id: entry.id}) }}"
-                   class="hover:underline text-sm font-semibold text-base-content leading-tight block truncate md:whitespace-normal">
+                   class="hover:underline text-sm font-semibold text-base-content leading-tight block md:truncate">
                     {{ entry.name }}
                 </a>
                 {# Mobile only: Type badge #}
@@ -35,19 +35,19 @@
         <span class="hidden md:inline badge badge-ghost badge-sm">{{ entry.type.label }}</span>
 
         {# Price #}
-        <div class="flex justify-between items-center md:justify-end md:text-right">
+        <div class="flex justify-between items-center md:justify-end md:text-right md:whitespace-nowrap">
             <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">Best Price</span>
-            <span class="font-display text-base font-bold text-primary">
+            <span class="font-display text-base font-bold text-primary md:truncate">
                 {{ lowestPrice ? (lowestPrice.value|number_format(2, ',', '.')) ~ '€'  : '-' }}
                 <span class="text-xs font-normal text-base-content/50">/ {{ entry.unit.label }}</span>
             </span>
         </div>
 
         {# Shop #}
-        <div class="flex justify-between items-center md:block">
+        <div class="flex justify-between items-center md:block md:whitespace-nowrap">
             <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">Store</span>
             {% if lowestPrice %}
-                <span class="badge badge-ghost badge-sm">
+                <span class="badge badge-ghost badge-sm md:truncate">
                     {{ lowestPrice.shop.label }}
                 </span>
             {% else %}

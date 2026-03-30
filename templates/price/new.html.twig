@@ -43,8 +43,8 @@
         {% endif %}
 
         <div class="card bg-base-100 shadow-sm">
-            <div class="card-body p-5 sm:p-8 gap-6">
-                <div class="flex items-center gap-3 pb-4 border-b border-base-300">
+            <div class="card-body p-4 sm:p-8 gap-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pb-4 border-b border-base-300">
                     <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -53,7 +53,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="font-display text-xl text-base-content leading-tight">Record a price</h1>
+                        <h1 class="font-display text-lg sm:text-xl text-base-content leading-tight">Record a price</h1>
                         <p class="text-xs text-base-content/50 mt-0.5">Log the current price of a product at a specific
                             store.</p>
                     </div>
@@ -228,28 +228,24 @@
                             label_attr: { class: 'text-sm font-medium text-base-content' }
                         }) }}
 
-                        <label
-                            class="input input-bordered flex items-center gap-2 {{ form.subUnit.vars.errors|length > 0 ? 'input-error' : '' }}">
-                            {{ form_widget(form.subUnit, {
-                                attr: {
-                                    class:        'grow bg-transparent outline-none text-sm',
-                                    autocomplete: 'off',
-                                }
-                            }) }}
-                        </label>
+                        {{ form_widget(form.subUnit, {
+                            attr: {
+                                class: 'select select-bordered w-full text-sm' ~ (form.subUnit.vars.errors|length > 0 ? ' select-error' : '')
+                            }
+                        }) }}
 
                         {% if form.subUnit.vars.errors|length > 0 %}
-                            <div class="flex items-start gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5"
+                            <div class="flex items-center gap-1.5 text-error text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
                                      viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                           d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                           clip-rule="evenodd"/>
                                 </svg>
-                                <span>{{ form_errors(form.subUnit) }}</span>
+                                {{ form_errors(form.subUnit) }}
                             </div>
                         {% else %}
-                            <p class="text-xs text-base-content/40">A unidade the quantidade introduzida.</p>
+                            <p class="text-xs text-base-content/40">Selecione a unidade da quantidade a introduzir.</p>
                         {% endif %}
                     </div>
 
@@ -278,13 +274,8 @@
                     </div>
 
                     {# ── Actions ── #}
-                    <div class="flex justify-end gap-2 pt-2 border-t border-base-300">
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
+                    <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
+                        <button type="submit" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
                             Record price
                         </button>
                     </div>

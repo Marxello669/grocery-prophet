@@ -100,8 +100,8 @@
     </div>
 {% endif %}
 
-<div class="flex justify-end gap-2 pt-2 border-t border-base-300">
-    <button type="submit" class="btn btn-primary btn-sm">
+<div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
+    <button type="submit" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
         {{ submit_label|default("Add Product") }}
     </button>
 </div>
