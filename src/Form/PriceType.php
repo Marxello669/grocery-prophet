@@ -28,11 +28,7 @@ class PriceType extends AbstractType
                 'choice_label' => 'label',
                 'placeholder' => 'Selecione a loja'
             ])
-            ->add('grocery', EntityType::class, [
-                'class' => Grocery::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Selecione o produto'
-            ])
+            ->add('grocery', GroceryAutoCompleteType::class)
             ->add('quantity', NumberType::class)
             ->addDependent('subUnit', 'grocery', function (DependentField $field, ?Grocery $grocery) {
                 $field->add(EnumType::class, [

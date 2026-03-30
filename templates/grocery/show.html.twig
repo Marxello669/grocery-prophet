@@ -23,45 +23,45 @@
     {% set spread = (highestPrice and lowestPrice) ? (highestPrice.price - lowestPrice.price)|number_format(2) : 0 %}
 
     <div class="min-h-screen bg-base-200">
-        <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4 sm:gap-5">
             {# ── HERO CARD ── #}
-            <div class="card bg-base-100 shadow-sm">
-                <div class="card-body p-5 sm:p-6">
-                    <div class="flex items-start gap-4">
+            <div class="card bg-base-100 shadow-sm relative">
+                {# Edit button in top right corner #}
+                <a href="{{ path('app_grocery_edit', {id: grocery.id}) }}" class="absolute top-4 sm:top-6 right-4 sm:right-6 btn btn-xs sm:btn-sm btn-ghost gap-2 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit
+                </a>
+                <div class="card-body p-4 sm:p-6 gap-3 sm:gap-4">
+                    <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
 
                         {# Product icon #}
                         <div
-                            class="w-14 h-14 rounded-xl bg-base-200 flex items-center justify-center text-3xl shrink-0 select-none">
+                            class="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-base-200 flex items-center justify-center text-2xl sm:text-3xl shrink-0 select-none">
                             {{ grocery.type.emoji }}
                         </div>
 
                         {# Name + meta #}
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between gap-2 flex-wrap">
-                                <div>
-                                    <h1 class="font-display text-2xl text-base-content leading-tight">{{ grocery.name }}</h1>
-                                    <p class="text-sm text-base-content/50 mt-0.5">
+                        <div class="flex-1 min-w-0 w-full">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
+                                <div class="flex-1">
+                                    <h1 class="font-display text-xl sm:text-2xl text-base-content leading-tight">{{ grocery.name }}</h1>
+                                    <p class="text-xs sm:text-sm text-base-content/50 mt-0.5">
                                         <span
-                                            class="badge badge-ghost badge-sm align-middle">{{ grocery.type.label }}</span>
+                                            class="badge badge-ghost badge-xs sm:badge-sm align-middle">{{ grocery.type.label }}</span>
                                     </p>
                                 </div>
-
-                                <a href="{{ path('app_grocery_edit', {id: grocery.id}) }}" class="btn btn-sm btn-ghost gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit
-                                </a>
                             </div>
 
                             {# Lowest price highlight #}
-                            <div class="flex items-baseline gap-2 mt-3">
-                              <span class="font-display text-3xl font-bold text-primary">
+                            <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 mt-3">
+                              <span class="font-display text-2xl sm:text-3xl font-bold text-primary">
                                 {{ lowestPrice.price ?? '-' }}€ / {{ grocery.unit.label }}
                               </span>
 
                                 <span
-                                    class="badge badge-ghost badge-sm align-middle">{{ lowestPrice.shop.label|default('No shop data') }}</span>
+                                    class="badge badge-ghost badge-xs sm:badge-sm align-middle">{{ lowestPrice.shop.label|default('No shop data') }}</span>
                             </div>
                         </div>
 
@@ -70,18 +70,18 @@
             </div>
 
             {# ── STAT TILES ── #}
-            <div class="grid grid-cols-3 gap-3">
-                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                <div class="bg-base-100 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm">
                     <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Shops</p>
-                    <p class="text-2xl font-bold text-base-content mt-1">{{ currentPrices|length }}</p>
+                    <p class="text-xl sm:text-2xl font-bold text-base-content mt-1">{{ currentPrices|length }}</p>
                 </div>
-                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+                <div class="bg-base-100 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm">
                     <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Avg. price</p>
-                    <p class="text-2xl font-bold text-base-content mt-1">{{ avgPrice }}€</p>
+                    <p class="text-xl sm:text-2xl font-bold text-base-content mt-1">{{ avgPrice }}€</p>
                 </div>
-                <div class="bg-base-100 rounded-xl p-4 shadow-sm">
+                <div class="bg-base-100 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm col-span-2 sm:col-span-1">
                     <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Spread</p>
-                    <p class="text-2xl font-bold text-base-content mt-1">{{ spread }}€</p>
+                    <p class="text-xl sm:text-2xl font-bold text-base-content mt-1">{{ spread }}€</p>
                 </div>
             </div>
 
@@ -96,68 +96,79 @@
 
             {# ── CURRENT PRICES TABLE ── #}
             <div class="card bg-base-100 shadow-sm overflow-hidden">
-                <div class="card-body p-5 sm:p-6 pb-0 gap-0">
-                    <h2 class="text-base font-semibold text-base-content mb-3">Current prices by shop</h2>
+                <div class="card-body p-4 sm:p-6 pb-0 gap-0">
+                    <h2 class="text-sm sm:text-base font-semibold text-base-content mb-3">Current prices by shop</h2>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="table table-sm">
-                        <thead class="hidden md:table-header-group">
-                        <tr>
-                            <th>Shop</th>
-                            <th class="text-right">Price</th>
-                            <th class="text-right hidden sm:table-cell">vs. avg.</th>
-                            <th class="text-right">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for entry in currentPrices %}
-                            {% set diff = (entry.price - avgPrice)|number_format(2) %}
-                            <tr class="hover:bg-base-200/50 flex flex-col md:table-row border-b border-base-200 md:border-none p-4 md:p-0 gap-2 md:gap-0">
-                                <td class="p-0 md:p-3">
-                                    <div class="flex items-center justify-between md:justify-start gap-2">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full inline-block shrink-0"
-                                                  style="background-color: {{ entry.shop.color }};"></span>
-                                            <span class="font-medium text-sm">{{ entry.shop.label }}</span>
-                                        </div>
-                                        <div class="md:hidden">
-                                            {% if entry.lowest %}
-                                                <span class="badge badge-success badge-soft badge-xs">Lowest</span>
-                                            {% elseif entry.highest %}
-                                                <span class="badge badge-error badge-soft badge-xs">Highest</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-right font-display font-bold text-base text-primary p-0 md:p-3 flex justify-between md:table-cell">
-                                    <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">Price</span>
-                                    <span>{{ entry.price|number_format(2) }}€</span>
-                                </td>
-                                <td class="text-right text-sm p-0 md:p-3 flex justify-between md:table-cell">
-                                    <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">vs. avg.</span>
-                                    {% if diff > 0 %}
-                                        <span class="text-error">+{{ diff }}€</span>
-                                    {% elseif diff < 0 %}
-                                        <span class="text-success">-{{ diff|abs }}€</span>
-                                    {% else %}
-                                        <span class="text-base-content/40">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-right hidden md:table-cell">
-                                    {% if entry.lowest %}
-                                        <span class="badge badge-success badge-soft badge-sm">Lowest</span>
-                                    {% elseif entry.highest %}
-                                        <span class="badge badge-error badge-soft badge-sm">Highest</span>
-                                    {% else %}
-                                        <span class="badge badge-ghost badge-sm">Mid</span>
-                                    {% endif %}
-                                </td>
+                {% if currentPrices|length > 0 %}
+                    <div class="overflow-x-auto">
+                        <table class="table table-sm">
+                            <thead class="hidden md:table-header-group">
+                            <tr>
+                                <th>Shop</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-right hidden sm:table-cell">vs. avg.</th>
+                                <th class="text-right">Status</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            </thead>
+                            <tbody class="divide-y divide-base-200 md:divide-y-0">
+                            {% for entry in currentPrices %}
+                                {% set diff = (entry.price - avgPrice)|number_format(2) %}
+                                <tr class="hover:bg-base-200/50 flex flex-col md:table-row p-4 md:p-0 gap-2 md:gap-0">
+                                    <td class="p-0 md:p-3">
+                                        <div class="flex items-center justify-between md:justify-start gap-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full inline-block shrink-0"
+                                                      style="background-color: {{ entry.shop.color }};"></span>
+                                                <span class="font-medium text-xs sm:text-sm">{{ entry.shop.label }}</span>
+                                            </div>
+                                            <div class="md:hidden">
+                                                {% if entry.lowest %}
+                                                    <span class="badge badge-success badge-soft badge-xs">Lowest</span>
+                                                {% elseif entry.highest %}
+                                                    <span class="badge badge-error badge-soft badge-xs">Highest</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-display font-bold text-sm sm:text-base text-primary p-0 md:p-3 flex justify-between md:table-cell">
+                                        <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">Price</span>
+                                        <span>{{ entry.price|number_format(2) }}€</span>
+                                    </td>
+                                    <td class="text-right text-xs sm:text-sm p-0 md:p-3 flex justify-between md:table-cell">
+                                        <span class="md:hidden text-xs text-base-content/40 font-medium uppercase tracking-wider">vs. avg.</span>
+                                        {% if diff > 0 %}
+                                            <span class="text-error">+{{ diff }}€</span>
+                                        {% elseif diff < 0 %}
+                                            <span class="text-success">-{{ diff|abs }}€</span>
+                                        {% else %}
+                                            <span class="text-base-content/40">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right hidden md:table-cell">
+                                        {% if entry.lowest %}
+                                            <span class="badge badge-success badge-soft badge-sm">Lowest</span>
+                                        {% elseif entry.highest %}
+                                            <span class="badge badge-error badge-soft badge-sm">Highest</span>
+                                        {% else %}
+                                            <span class="badge badge-ghost badge-sm">Mid</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {{' '}}
+                    </div>
+                {% else %}
+                    <div class="p-8 sm:p-10 text-center">
+                        <span class="text-4xl mb-3 block">📊</span>
+                        <p class="text-base-content/60 text-sm sm:text-base">No prices recorded yet</p>
+                        <p class="text-base-content/40 text-xs sm:text-sm mt-1">Record the first price for this product to start tracking.</p>
+                        <a href="{{ path('app_price_new', {grocery: grocery.id}) }}" class="btn btn-primary btn-sm mt-4">
+                            Record price
+                        </a>
+                    </div>
+                {% endif %}
         </main>
     </div>
 

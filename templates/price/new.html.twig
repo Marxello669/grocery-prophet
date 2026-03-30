@@ -18,14 +18,24 @@
     </div>
 {% endblock %}
 
+{% block topbar_actions %}
+    <a href="{{ grocery is not null
+    ? path('app_grocery_show', { id: grocery.id })
+    : path('app_index') }}"
+       class="btn btn-ghost btn-sm">
+        Cancel
+    </a>
+{% endblock %}
+
 {% block body %}
     <div class="max-w-2xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-5">
+
+        {# ── Context card ── #}
         {% if grocery is not null %}
             <a href="{{ path('app_grocery_show', { id: grocery.id }) }}"
                class="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors">
                 <div class="card-body p-4 flex flex-row items-center gap-4">
-                    <div
-                        class="w-11 h-11 rounded-xl bg-base-200 flex items-center justify-center text-2xl shrink-0 select-none">
+                    <div class="w-11 h-11 rounded-xl bg-base-200 flex items-center justify-center text-2xl shrink-0 select-none">
                         {{ grocery.type.emoji }}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -42,9 +52,12 @@
             </a>
         {% endif %}
 
+        {# ── Form card ── #}
         <div class="card bg-base-100 shadow-sm">
             <div class="card-body p-4 sm:p-8 gap-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pb-4 border-b border-base-300">
+
+                {# Card header #}
+                <div class="flex items-center gap-3 pb-4 border-b border-base-300">
                     <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -53,24 +66,23 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="font-display text-lg sm:text-xl text-base-content leading-tight">Record a price</h1>
-                        <p class="text-xs text-base-content/50 mt-0.5">Log the current price of a product at a specific
-                            store.</p>
+                        <h1 class="font-display text-xl text-base-content leading-tight">Record a price</h1>
+                        <p class="text-xs text-base-content/50 mt-0.5">Log the current price of a product at a specific store.</p>
                     </div>
                 </div>
 
-
                 <twig:PriceNewForm :dto="dto" :form="form">
-                    {{ form_start(form, { attr: { class: 'flex flex-col gap-5'} }) }}
 
-                    {# ── Value / Price field ── #}
+                    {{ form_start(form, { attr: { class: 'flex flex-col gap-5', novalidate: 'novalidate' } }) }}
+
+                    {# ── Price value ── #}
                     <div class="flex flex-col gap-1.5">
                         {{ form_label(form.value, 'Price value', {
                             label_attr: { class: 'text-sm font-medium text-base-content' }
                         }) }}
 
                         <label class="input input-bordered flex items-center gap-2
-                                  {{ form.value.vars.errors|length > 0 ? 'input-error' : '' }}">
+                                      {{ form.value.vars.errors|length > 0 ? 'input-error' : '' }}">
                             <span class="text-base-content/40 font-semibold text-sm shrink-0">€</span>
                             {{ form_widget(form.value, {
                                 attr: {
@@ -85,11 +97,8 @@
 
                         {% if form.value.vars.errors|length > 0 %}
                             <div class="flex items-start gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5"
-                                     viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                          clip-rule="evenodd"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
                                 <span>{{ form_errors(form.value) }}</span>
                             </div>
@@ -98,14 +107,14 @@
                         {% endif %}
                     </div>
 
-                    {# ── Shop / Store field ── #}
+                    {# ── Store / shop ── #}
                     <div class="flex flex-col gap-1.5">
                         {{ form_label(form.shop, 'Store / shop', {
                             label_attr: { class: 'text-sm font-medium text-base-content' }
                         }) }}
 
                         <label class="input input-bordered flex items-center gap-2
-                                  {{ form.shop.vars.errors|length > 0 ? 'input-error' : '' }}">
+                                      {{ form.shop.vars.errors|length > 0 ? 'input-error' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0"
                                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -133,11 +142,8 @@
 
                         {% if form.shop.vars.errors|length > 0 %}
                             <div class="flex items-start gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5"
-                                     viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                          clip-rule="evenodd"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
                                 <span>{{ form_errors(form.shop) }}</span>
                             </div>
@@ -146,56 +152,39 @@
                         {% endif %}
                     </div>
 
-                    {# ── Grocery product field ── #}
+                    {# ── Product (Tom Select) ── #}
                     <div class="flex flex-col gap-1.5">
-                        {{ form_label(form.grocery, 'Grocery product', {
+                        {{ form_label(form.grocery, 'Product', {
                             label_attr: { class: 'text-sm font-medium text-base-content' }
                         }) }}
 
-                        <div class="relative">
-                            <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40"
-                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m5-9l2 9"/>
-                                </svg>
-                            </div>
-                            {{ form_widget(form.grocery, {
-                                attr: {
-                                    class: 'select select-bordered w-full text-sm'
-                                    ~ (form.grocery.vars.errors|length > 0 ? ' select-error' : '')
-                                }
-                            }) }}
-                        </div>
+                        {{ form_widget(form.grocery) }}
 
                         {% if form.grocery.vars.errors|length > 0 %}
                             <div class="flex items-start gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5"
-                                     viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                          clip-rule="evenodd"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
                                 <span>{{ form_errors(form.grocery) }}</span>
                             </div>
                         {% else %}
-                            <p class="text-xs text-base-content/40">
-                                The grocery item this price belongs to. Can't find it?
-                                <a href="{{ path('app_grocery_new') }}" class="link link-hover text-primary">Add a new
-                                    product ↗</a>
-                            </p>
+                            <p class="text-xs text-base-content/40">Search and select the product.</p>
                         {% endif %}
                     </div>
 
-                    {# Quantity #}
+                    {# ── Quantity ── #}
                     <div class="flex flex-col gap-1.5">
                         {{ form_label(form.quantity, 'Quantidade', {
                             label_attr: { class: 'text-sm font-medium text-base-content' }
                         }) }}
 
                         <label class="input input-bordered flex items-center gap-2
-                                  {{ form.value.vars.errors|length > 0 ? 'input-error' : '' }}">
-                            <span class="text-base-content/40 font-semibold text-sm shrink-0">€</span>
+                                      {{ form.quantity.vars.errors|length > 0 ? 'input-error' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                            </svg>
                             {{ form_widget(form.quantity, {
                                 attr: {
                                     class:        'grow bg-transparent outline-none text-sm font-mono',
@@ -209,11 +198,8 @@
 
                         {% if form.quantity.vars.errors|length > 0 %}
                             <div class="flex items-start gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5"
-                                     viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                          clip-rule="evenodd"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
                                 <span>{{ form_errors(form.quantity) }}</span>
                             </div>
@@ -222,7 +208,7 @@
                         {% endif %}
                     </div>
 
-                    {# Unit #}
+                    {# ── Unit (subUnit) ── #}
                     <div class="flex flex-col gap-1.5">
                         {{ form_label(form.subUnit, 'Unidade', {
                             label_attr: { class: 'text-sm font-medium text-base-content' }
@@ -230,19 +216,17 @@
 
                         {{ form_widget(form.subUnit, {
                             attr: {
-                                class: 'select select-bordered w-full text-sm' ~ (form.subUnit.vars.errors|length > 0 ? ' select-error' : '')
+                                class: 'select select-bordered w-full text-sm'
+                                ~ (form.subUnit.vars.errors|length > 0 ? ' select-error' : '')
                             }
                         }) }}
 
                         {% if form.subUnit.vars.errors|length > 0 %}
-                            <div class="flex items-center gap-1.5 text-error text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
-                                     viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                          clip-rule="evenodd"/>
+                            <div class="flex items-start gap-1.5 text-error text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
-                                {{ form_errors(form.subUnit) }}
+                                <span>{{ form_errors(form.subUnit) }}</span>
                             </div>
                         {% else %}
                             <p class="text-xs text-base-content/40">Selecione a unidade da quantidade a introduzir.</p>
@@ -262,27 +246,32 @@
                     {% endif %}
 
                     {# ── Timestamp note ── #}
-                    <div
-                        class="flex items-center gap-2 text-xs text-base-content/40 bg-base-200 rounded-lg px-3 py-2.5">
+                    <div class="flex items-center gap-2 text-xs text-base-content/40 bg-base-200 rounded-lg px-3 py-2.5">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Recorded at <strong
-                            class="font-medium text-base-content/60 ml-0.5">{{ "now"|date("d M Y") }}</strong>
+                        Recorded at <strong class="font-medium text-base-content/60 ml-0.5">{{ "now"|date("d M Y") }}</strong>
                     </div>
 
                     {# ── Actions ── #}
-                    <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
-                        <button type="submit" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
+                    <div class="flex justify-end gap-2 pt-2 border-t border-base-300">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                             Record price
                         </button>
                     </div>
 
                     {{ form_rest(form) }}
                     {{ form_end(form) }}
+
                 </twig:PriceNewForm>
+
             </div>
         </div>
 
@@ -291,5 +280,6 @@
             <a href="{{ grocery is not null ? path('app_grocery_show', { id: grocery.id }) : path('app_index') }}"
                class="link link-hover">product profile</a>.
         </p>
+
     </div>
 {% endblock %}

@@ -19,7 +19,7 @@ class PriceEditType extends AbstractType
         $builder
             ->add('value')
             ->add('shop', EnumType::class, ['class' => ShopEnum::class, 'choice_label' => 'label', 'placeholder' => 'Choose a shop'])
-            ->add('grocery', EntityType::class, ['class' => Grocery::class, 'choice_label' => 'name', 'placeholder' => 'Choose a grocery'])
+            ->add('grocery', GroceryAutoCompleteType::class, ['class' => Grocery::class, 'choice_label' => 'name', 'placeholder' => 'Choose a grocery'])
             ->add('createdAt', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date',
