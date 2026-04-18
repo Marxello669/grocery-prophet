@@ -1,0 +1,178 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Import / Export Data{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm">
+        <ul>
+            <li><a href="{{ path('app_index') }}">Home</a></li>
+            <li class="font-display">Import / Export</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+<main class="flex-1 overflow-y-auto p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="font-display text-3xl mb-2">Import / Export Data</h1>
+        <p class="text-base-content/70 mb-8">Manage your groceries and prices by importing from CSV files or exporting your data.</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            {# Export Section #}
+            <div class="card bg-base-100 border border-base-300">
+                <div class="card-body">
+                    <h2 class="card-title font-display text-xl">Export Data</h2>
+                    <p class="text-sm text-base-content/70 mb-4">Download your data as CSV files</p>
+                    
+                    <div class="space-y-3">
+                        <a href="{{ path('app_export_groceries') }}" class="btn btn-primary btn-block" download>
+                            <twig:ux:icon name="lucide:download" />
+                            Export Groceries
+                        </a>
+                        <a href="{{ path('app_export_prices') }}" class="btn btn-primary btn-block" download>
+                            <twig:ux:icon name="lucide:download" />
+                            Export Prices
+                        </a>
+                    </div>
+
+                    <div class="divider my-4"></div>
+
+                    <div class="text-sm text-base-content/70">
+                        <p class="font-semibold mb-2">Export Format:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>Groceries:</strong> Name, Type, Unit</li>
+                            <li><strong>Prices:</strong> Grocery Name, Shop, Value, Date</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {# Import Section #}
+            <div class="card bg-base-100 border border-base-300">
+                <div class="card-body">
+                    <h2 class="card-title font-display text-xl">Import Data</h2>
+                    <p class="text-sm text-base-content/70 mb-4">Upload CSV files to import data</p>
+                    
+                    <div class="space-y-4">
+                        {# Groceries Import #}
+                        <form action="{{ path('app_import_groceries') }}" method="POST" enctype="multipart/form-data">
+                            <label class="form-control w-full">
+                                <div class="label">
+                                    <span class="label-text text-sm font-semibold">Import Groceries</span>
+                                </div>
+                                <input type="file" name="groceries_file" accept=".csv" class="file-input file-input-bordered file-input-sm w-full" required />
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-sm w-full mt-2">
+                                <twig:ux:icon name="lucide:upload" />
+                                Import
+                            </button>
+                        </form>
+
+                        <div class="divider my-2"></div>
+
+                        {# Prices Import #}
+                        <form action="{{ path('app_import_prices') }}" method="POST" enctype="multipart/form-data">
+                            <label class="form-control w-full">
+                                <div class="label">
+                                    <span class="label-text text-sm font-semibold">Import Prices</span>
+                                </div>
+                                <input type="file" name="prices_file" accept=".csv" class="file-input file-input-bordered file-input-sm w-full" required />
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-sm w-full mt-2">
+                                <twig:ux:icon name="lucide:upload" />
+                                Import
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Reference Data Section #}
+        <div class="card bg-base-100 border border-base-300 mt-8">
+            <div class="card-body">
+                <h2 class="card-title font-display text-xl">CSV Format Reference</h2>
+                <p class="text-sm text-base-content/70 mb-6">Use these values when creating your CSV files for import</p>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    {# Grocery Types #}
+                    <div>
+                        <h3 class="font-semibold mb-3 text-sm">Grocery Types</h3>
+                        <div class="bg-base-200 p-3 rounded text-xs font-mono overflow-x-auto">
+                            <div class="space-y-1">
+                                {% for type in enumValues.types %}
+                                    <div class="text-base-content/70">{{ type }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Units #}
+                    <div>
+                        <h3 class="font-semibold mb-3 text-sm">Units</h3>
+                        <div class="bg-base-200 p-3 rounded text-xs font-mono space-y-1">
+                            {% for unit in enumValues.units %}
+                                <div class="text-base-content/70">{{ unit }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {# Shops #}
+                    <div>
+                        <h3 class="font-semibold mb-3 text-sm">Shops</h3>
+                        <div class="bg-base-200 p-3 rounded text-xs font-mono space-y-1">
+                            {% for shop in enumValues.shops %}
+                                <div class="text-base-content/70">{{ shop }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider my-6"></div>
+
+                <div>
+                    <h3 class="font-semibold mb-3 text-sm">Example CSV Formats</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        {# Groceries Example #}
+                        <div>
+                            <p class="text-xs font-semibold mb-2 text-base-content/70">groceries.csv</p>
+                            <pre class="bg-base-200 p-3 rounded text-xs overflow-x-auto"><code>Name,Type,Unit
+Apple,fruit,kg
+Milk,dairy,l
+Chicken Breast,meat,kg
+Rice,rice_pasta_flour,kg</code></pre>
+                        </div>
+
+                        {# Prices Example #}
+                        <div>
+                            <p class="text-xs font-semibold mb-2 text-base-content/70">prices.csv</p>
+                            <pre class="bg-base-200 p-3 rounded text-xs overflow-x-auto"><code>Grocery Name,Shop,Value,Date
+Apple,continente,1.99,2026-04-18
+Milk,lidl,0.89,2026-04-18
+Chicken Breast,pingo_doce,5.49,2026-04-18
+Rice,continente,2.99,2026-04-17</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Documentation #}
+        <div class="card bg-info/10 border border-info/30 mt-8">
+            <div class="card-body">
+                <h3 class="font-semibold font-display text-lg mb-2 text-info">Import Guidelines</h3>
+                <ul class="list-disc list-inside space-y-2 text-sm text-base-content/80">
+                    <li><strong>CSV Format:</strong> Files must be in comma-separated values format</li>
+                    <li><strong>Header Row:</strong> First row should contain column names (will be skipped)</li>
+                    <li><strong>Duplicate Names:</strong> Groceries with duplicate names will not be imported</li>
+                    <li><strong>Referenced Groceries:</strong> When importing prices, the grocery must already exist in the database</li>
+                    <li><strong>Enum Values:</strong> Only use the exact values listed in the reference section above</li>
+                    <li><strong>Date Format:</strong> Prices must use YYYY-MM-DD date format</li>
+                    <li><strong>Error Reporting:</strong> All import errors will be displayed after the import attempt</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

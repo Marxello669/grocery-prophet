@@ -153,6 +153,14 @@
                         </a>
                     </li>
 
+                    <li>
+                        <a href="{{ path('app_import_export') }}"
+                           class="{{ _route == 'app_import_export' or _route starts with 'app_import_' or _route starts with 'app_export_' ? 'active' : '' }}">
+                            <twig:ux:icon name="lucide:database" />
+                            Import / Export
+                        </a>
+                    </li>
+
                 </ul>
             </nav>
 
