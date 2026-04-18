@@ -6,6 +6,7 @@ use App\Enum\GroceryEnum;
 use App\Enum\ShopEnum;
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PriceRepository::class)]
 class Price
@@ -15,6 +16,7 @@ class Price
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Positive]
     #[ORM\Column(length: 255)]
     private ?string $value = null;
 

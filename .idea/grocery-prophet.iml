@@ -134,6 +134,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-twig-component" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-chartjs" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfonycasts/dynamic-forms" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-autocomplete" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-icons" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

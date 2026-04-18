@@ -4,59 +4,54 @@ namespace App\Enum;
 
 enum GroceryEnum: string
 {
-    // Frescos
-    case meat = 'meat';
-    case fish = 'fish';
-    case fruit = 'fruit';
-    case vegetables = 'vegetables';
-    case dairy = 'dairy';
-    case bakery_pastry = 'bakery_pastry';
-
-    // Mercearia
-    case rice_pasta_flour = "rice_pasta_flour";
-    case canned_goods = "canned_goods";
-    case breakfast_coffee = "breakfast_coffee";
-    case condiments_oils = "condiments_oils";
-    case snacks_sweets = "snacks_sweets";
-    case bio_healthy = "bio_healthy";
-
-    // Bebidas
     case beverage = 'beverage';
-    case alcohol = 'alcohol';
-
-    // Congelados
-    case frozen = "frozen";
-
-    // Casa e Pessoal
-    case cleaning = "cleaning";
-    case personal_care = "personal_care";
-    case baby = "baby";
     case pets = "pets";
+    case rice_pasta_flour = "rice_pasta_flour";
+    case oils_vinegar = "oils_vinegar";
+    case baby = "baby";
+    case bio_healthy = "bio_healthy";
     case home_bazar = "home_bazar";
+    case frozen = "frozen";
+    case canned_goods = "canned_goods";
+    case fruit = 'fruit';
+    case alcohol = 'alcohol';
+    case personal_care = "personal_care";
+    case dairy = 'dairy';
+    case vegetables = 'vegetables';
+    case cleaning = "cleaning";
+    case bakery_pastry = 'bakery_pastry';
+    case fish = 'fish';
+    case breakfast_coffee = "breakfast_coffee";
+    case meal = "meal";
+    case snacks_sweets = "snacks_sweets";
+    case meat = 'meat';
+    case condiments = "condiments";
 
     public function label(): string
     {
         return match ($this) {
-            self::meat => "Talho e Aves",
-            self::fish => "Peixaria e Marisco",
-            self::fruit => "Fruta",
-            self::vegetables => "Legumes",
-            self::dairy => "Laticínios e Ovos",
-            self::bakery_pastry => "Padaria e Pastelaria",
-            self::rice_pasta_flour => "Arroz, Massa e Farinha",
-            self::canned_goods => "Conservas e Enlatados",
-            self::breakfast_coffee => "Pequeno-almoço e Café",
-            self::condiments_oils => "Temperos e Óleos",
-            self::snacks_sweets => "Snacks, Bolachas e Doces",
-            self::bio_healthy => "Bio e Vida Saudável",
             self::beverage => "Águas, Sumos e Refrigerantes",
-            self::alcohol => "Garrafeira (Vinhos e Cervejas)",
-            self::frozen => "Congelados",
-            self::cleaning => "Limpeza da Casa",
-            self::personal_care => "Higiene e Beleza",
-            self::baby => "Bebé e Criança",
             self::pets => "Animais de Estimação",
+            self::rice_pasta_flour => "Arroz, Massa e Farinha",
+            self::oils_vinegar => "Azeites, Óleos e Vinagre",
+            self::baby => "Bebé e Criança",
+            self::bio_healthy => "Bio e Vida Saudável",
             self::home_bazar => "Casa, Cozinha e Lazer",
+            self::frozen => "Congelados",
+            self::canned_goods => "Conservas e Enlatados",
+            self::fruit => "Fruta",
+            self::alcohol => "Garrafeira (Vinhos e Cervejas)",
+            self::personal_care => "Higiene e Beleza",
+            self::dairy => "Laticínios e Ovos",
+            self::vegetables => "Legumes",
+            self::cleaning => "Limpeza da Casa",
+            self::bakery_pastry => "Padaria e Pastelaria",
+            self::fish => "Peixaria e Marisco",
+            self::breakfast_coffee => "Pequeno-almoço e Café",
+            self::meal => "Refeições",
+            self::snacks_sweets => "Snacks, Bolachas e Doces",
+            self::meat => "Talho e Aves",
+            self::condiments => "Temperos e Especiarias",
         };
     }
 
@@ -72,7 +67,6 @@ enum GroceryEnum: string
             self::rice_pasta_flour => "🍝",
             self::canned_goods => "🥫",
             self::breakfast_coffee => "☕",
-            self::condiments_oils => "🧂",
             self::snacks_sweets => "🍪",
             self::bio_healthy => "🌿",
             self::beverage => "🥤",
@@ -83,6 +77,9 @@ enum GroceryEnum: string
             self::baby => "👶",
             self::pets => "🐾",
             self::home_bazar => "🏠",
+            self::condiments => "🧂",
+            self::oils_vinegar => "🫒",
+            self::meal => "🍽️",
         };
     }
 }

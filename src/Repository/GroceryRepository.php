@@ -32,8 +32,7 @@ class GroceryRepository extends ServiceEntityRepository
             ->setParameter('query', "%$query%")
             ->setFirstResult($offset)
             ->setMaxResults($quantity)
-            ->orderBy('p.value', 'DESC')
-            ->addOrderBy('g.name', 'ASC');
+            ->orderBy('g.name', 'ASC');
 
         if (!is_null($type)) {
             $qb->andWhere('g.type = :type')

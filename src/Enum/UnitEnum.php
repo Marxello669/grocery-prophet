@@ -20,7 +20,7 @@ enum UnitEnum: string
             self::mg => "mg",
             self::l => "L",
             self::ml => "ml",
-            self::unit => "Unidade",
+            self::unit => "Uni",
         };
     }
 

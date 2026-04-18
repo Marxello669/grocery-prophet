@@ -4,13 +4,13 @@ namespace App\Enum;
 
 enum ShopEnum: string
 {
-    case continente = 'continente';
-    case rei_dos_precos = 'rei_dos_precos';
     case canario = 'canario';
-    case lidl = 'lidl';
-    case pingo_doce = 'pingo_doce';
+    case continente = 'continente';
     case intermarche = 'intermarche';
+    case lidl = 'lidl';
     case mercadona = 'mercadona';
+    case pingo_doce = 'pingo_doce';
+    case rei_dos_precos = 'rei_dos_precos';
 
     public function label(): string
     {

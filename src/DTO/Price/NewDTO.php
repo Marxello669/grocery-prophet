@@ -37,7 +37,7 @@ class NewDTO
     {
         $price = new Price();
 
-        $calculatedValue = $this->convertUnit($this->value, $this->quantity, $this->grocery->getUnit(), $this->subUnit);
+        $calculatedValue = $this->convertUnit($this->value, $this->quantity, $this->subUnit);
 
         $price->setValue($calculatedValue);
 
@@ -48,7 +48,7 @@ class NewDTO
         return $price;
     }
 
-    private function convertUnit(float $value, float $quantity, UnitEnum $baseUnit, UnitEnum $subUnit): float
+    private function convertUnit(float $value, float $quantity, UnitEnum $subUnit): float
     {
         $quantityInBaseUnit = $quantity * $subUnit->getFactor();
 
@@ -56,6 +56,6 @@ class NewDTO
             return 0.0;
         }
 
-        return $value / $quantityInBaseUnit;
+        return round($value / $quantityInBaseUnit, 3);
     }
 }

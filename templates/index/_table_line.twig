@@ -4,7 +4,8 @@
 
         <div class="flex items-center gap-3 md:contents">
             {# Emoji #}
-            <div class="w-10 h-10 md:w-auto md:h-auto rounded-lg bg-base-200 flex items-center justify-center md:bg-transparent">
+            <div
+                class="w-10 h-10 md:w-auto md:h-auto rounded-lg bg-base-200 flex items-center justify-center md:bg-transparent">
                 <span class="text-2xl leading-none select-none" aria-hidden="true">{{ entry.type.emoji }}</span>
             </div>
 
@@ -22,11 +23,14 @@
 
             {# Mobile only: Add price button #}
             <div class="md:hidden">
+                <a href="{{ path('app_shopping_list_add', {id: entry.id}) }}"
+                   class="btn btn-secondary btn-sm btn-circle">
+                    <twig:ux:icon name="lucide:shopping-cart"/>
+                </a>
+
                 <a href="{{ path('app_price_new', {grocery: entry.id}) }}"
                    class="btn btn-primary btn-sm btn-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                    <twig:ux:icon name="lucide:plus"/>
                 </a>
             </div>
         </div>
@@ -56,12 +60,14 @@
         </div>
 
         {# Desktop Action #}
-        <div class="hidden md:flex justify-end">
+        <div class="hidden md:flex justify-end gap-1">
+            <a href="{{ path('app_shopping_list_add', {id: entry.id}) }}"
+               class="btn btn-secondary btn-sm btn-square">
+                <twig:ux:icon name="lucide:shopping-cart"/>
+            </a>
             <a href="{{ path('app_price_new', {grocery: entry.id}) }}"
                class="btn btn-primary btn-sm btn-square">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+                <twig:ux:icon name="lucide:plus"/>
             </a>
         </div>
     </div>

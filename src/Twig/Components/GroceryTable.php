@@ -25,7 +25,7 @@ final class GroceryTable
     public int $page = 1;
 
     #[LiveProp(writable: true)]
-    public int $quantity = 5;
+    public int $quantity = 10;
 
     #[LiveProp(writable: true)]
     public ?GroceryEnum $type = null;
