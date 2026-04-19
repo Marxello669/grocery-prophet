@@ -23,10 +23,12 @@
 
             {# Mobile only: Add price button #}
             <div class="md:hidden">
-                <a href="{{ path('app_shopping_list_add', {id: entry.id}) }}"
-                   class="btn btn-secondary btn-sm btn-circle">
-                    <twig:ux:icon name="lucide:shopping-cart"/>
-                </a>
+                <form method="post" action="{{ path('app_shopping_list_add', {id: entry.id}) }}">
+                    <button type="submit"
+                            class="btn btn-secondary btn-sm btn-circle">
+                        <twig:ux:icon name="lucide:shopping-cart"/>
+                    </button>
+                </form>
 
                 <a href="{{ path('app_price_new', {grocery: entry.id}) }}"
                    class="btn btn-primary btn-sm btn-circle">
@@ -61,10 +63,12 @@
 
         {# Desktop Action #}
         <div class="hidden md:flex justify-end gap-1">
-            <a href="{{ path('app_shopping_list_add', {id: entry.id}) }}"
-               class="btn btn-secondary btn-sm btn-square">
-                <twig:ux:icon name="lucide:shopping-cart"/>
-            </a>
+            <form method="post" action="{{ path('app_shopping_list_add', {id: entry.id}) }}">
+                <button type="submit"
+                   class="btn btn-secondary btn-sm btn-square">
+                    <twig:ux:icon name="lucide:shopping-cart"/>
+                </button>
+            </form>
             <a href="{{ path('app_price_new', {grocery: entry.id}) }}"
                class="btn btn-primary btn-sm btn-square">
                 <twig:ux:icon name="lucide:plus"/>
