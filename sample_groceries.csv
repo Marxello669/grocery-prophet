@@ -1,9 +1,10 @@
-Name,Type,Unit
-Apple,fruit,kg
-Milk,dairy,l
-Chicken Breast,meat,kg
-Rice,rice_pasta_flour,kg
-Tomato,vegetables,kg
-Bread,bakery_pastry,unit
-Coffee,breakfast_coffee,g
-Olive Oil,oils_vinegar,l
+Name,Type,Unit,Base Product
+Apple,fruit,kg,Fruit
+Milk,dairy,l,Dairy
+Chicken Breast,meat,kg,Poultry
+Arborio Rice,rice_pasta_flour,kg,Rice
+Brown Rice,rice_pasta_flour,kg,Rice
+Tomato,vegetables,kg,
+Bread,bakery_pastry,unit,
+Coffee,breakfast_coffee,g,Beverages
+Olive Oil,oils_vinegar,l,Oils

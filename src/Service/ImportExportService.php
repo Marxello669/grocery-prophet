@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\BaseProduct;
 use App\Entity\Grocery;
 use App\Entity\Price;
 use App\Enum\GroceryEnum;
 use App\Enum\ShopEnum;
 use App\Enum\UnitEnum;
+use App\Repository\BaseProductRepository;
 use App\Repository\GroceryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -16,6 +18,7 @@ class ImportExportService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private GroceryRepository $groceryRepository,
+        private BaseProductRepository $baseProductRepository,
     ) {}
 
     /**
@@ -28,7 +31,7 @@ class ImportExportService
             $handle = fopen('php://output', 'w+');
             
             // Write CSV header
-            fputcsv($handle, ['Name', 'Type', 'Unit']);
+            fputcsv($handle, ['Name', 'Type', 'Unit', 'Base Product']);
             
             // Get all groceries
             $groceries = $this->groceryRepository->findAll();
@@ -38,6 +41,7 @@ class ImportExportService
                     $grocery->getName(),
                     $grocery->getType()->value,
                     $grocery->getUnit()->value,
+                    $grocery->getBaseProduct()?->getName() ?? '',
                 ]);
             }
             
@@ -109,7 +113,10 @@ class ImportExportService
             }
             
             try {
-                [$name, $type, $unit] = $data;
+                $name = $data[0];
+                $type = $data[1] ?? null;
+                $unit = $data[2] ?? null;
+                $baseProductName = $data[3] ?? null;
                 
                 // Validate enum values
                 try {
@@ -136,11 +143,25 @@ class ImportExportService
                     continue;
                 }
                 
+                // Find base product if specified
+                $baseProduct = null;
+                if (!empty($baseProductName)) {
+                    $baseProduct = $this->baseProductRepository->findOneBy(['name' => $baseProductName]);
+                    if (!$baseProduct) {
+                        $result['errors'][] = "Row $row: Base Product '$baseProductName' not found";
+                        $result['failed']++;
+                        continue;
+                    }
+                }
+                
                 // Create and persist grocery
                 $grocery = new Grocery();
                 $grocery->setName($name);
                 $grocery->setType($typeEnum);
                 $grocery->setUnit($unitEnum);
+                if ($baseProduct) {
+                    $grocery->setBaseProduct($baseProduct);
+                }
                 
                 $this->entityManager->persist($grocery);
                 $result['success']++;

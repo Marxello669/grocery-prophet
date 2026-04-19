@@ -16,6 +16,7 @@ Click the "Export Groceries" button on the Import/Export page. This will downloa
 - **Name**: The name of the grocery item
 - **Type**: The grocery type (e.g., fruit, dairy, meat)
 - **Unit**: The unit of measurement (kg, l, unit, g, mg, ml)
+- **Base Product**: The base product this grocery is a variant of (optional, can be empty)
 
 ### Export Prices
 
@@ -37,17 +38,22 @@ Click the "Export Prices" button on the Import/Export page. This will download a
 
 **CSV Format for Groceries:**
 ```
-Name,Type,Unit
-Apple,fruit,kg
-Milk,dairy,l
-Chicken Breast,meat,kg
+Name,Type,Unit,Base Product
+Apple,fruit,kg,Fruit
+Milk,dairy,l,Dairy
+Arborio Rice,rice_pasta_flour,kg,Rice
+Brown Rice,rice_pasta_flour,kg,Rice
+Chicken Breast,meat,kg,Poultry
+Bread,bakery_pastry,unit,
 ```
 
 **Important Notes:**
-- The first row must contain the header: `Name,Type,Unit`
-- All enum values must match exactly (see reference on Import/Export page)
+- The first row must contain the header: `Name,Type,Unit,Base Product`
+- All enum values for Type and Unit must match exactly (see reference on Import/Export page)
+- The Base Product column is optional - leave it empty if the grocery is not a variant of another product
+- If specified, the Base Product must already exist in your database
 - Duplicate grocery names will not be imported
-- All three columns are required
+- The Name, Type, and Unit columns are required; Base Product is optional
 
 ### Import Prices
 
