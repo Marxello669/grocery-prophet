@@ -13,13 +13,15 @@ final class ImportExportController extends AbstractController
 {
     public function __construct(
         private ImportExportService $importExportService,
-    ) {}
+    )
+    {
+    }
 
     #[Route('', name: 'app_import_export', methods: ['GET'])]
     public function index(): Response
     {
         $enumValues = $this->importExportService->getValidEnumValues();
-        
+
         return $this->render('import_export/index.html.twig', [
             'enumValues' => $enumValues,
         ]);
@@ -41,36 +43,36 @@ final class ImportExportController extends AbstractController
     public function importGroceries(Request $request): Response
     {
         $file = $request->files->get('groceries_file');
-        
+
         if (!$file) {
             $this->addFlash('error', 'No file selected');
             return $this->redirectToRoute('app_import_export');
         }
-        
+
         $handle = fopen($file->getPathname(), 'r');
         $result = $this->importExportService->importGroceries($handle);
         fclose($handle);
-        
+
         if ($result['success'] > 0) {
             $this->addFlash('success', sprintf(
                 'Successfully imported %d groceries',
                 $result['success']
             ));
         }
-        
+
         if (!empty($result['errors'])) {
             foreach ($result['errors'] as $error) {
                 $this->addFlash('warning', $error);
             }
         }
-        
+
         if ($result['failed'] > 0 && $result['success'] === 0) {
             $this->addFlash('error', sprintf(
                 'Failed to import %d rows',
                 $result['failed']
             ));
         }
-        
+
         return $this->redirectToRoute('app_import_export');
     }
 
@@ -78,36 +80,79 @@ final class ImportExportController extends AbstractController
     public function importPrices(Request $request): Response
     {
         $file = $request->files->get('prices_file');
-        
+
         if (!$file) {
             $this->addFlash('error', 'No file selected');
             return $this->redirectToRoute('app_import_export');
         }
-        
+
         $handle = fopen($file->getPathname(), 'r');
         $result = $this->importExportService->importPrices($handle);
         fclose($handle);
-        
+
         if ($result['success'] > 0) {
             $this->addFlash('success', sprintf(
                 'Successfully imported %d prices',
                 $result['success']
             ));
         }
-        
+
         if (!empty($result['errors'])) {
             foreach ($result['errors'] as $error) {
                 $this->addFlash('warning', $error);
             }
         }
-        
+
         if ($result['failed'] > 0 && $result['success'] === 0) {
             $this->addFlash('error', sprintf(
                 'Failed to import %d rows',
                 $result['failed']
             ));
         }
-        
+
+        return $this->redirectToRoute('app_import_export');
+    }
+
+    #[Route('/export/recipes', name: 'app_export_recipes', methods: ['GET'])]
+    public function exportRecipes(): Response
+    {
+        return $this->importExportService->exportRecipes();
+    }
+
+    #[Route('/import/recipes', name: 'app_import_recipes', methods: ['POST'])]
+    public function importRecipes(Request $request): Response
+    {
+        $file = $request->files->get('recipes_file');
+
+        if (!$file) {
+            $this->addFlash('error', 'No file selected');
+            return $this->redirectToRoute('app_import_export');
+        }
+
+        $handle = fopen($file->getPathname(), 'r');
+        $result = $this->importExportService->importRecipes($handle);
+        fclose($handle);
+
+        if ($result['success'] > 0) {
+            $this->addFlash('success', sprintf(
+                'Successfully imported %d recipe ingredients',
+                $result['success']
+            ));
+        }
+
+        if (!empty($result['errors'])) {
+            foreach ($result['errors'] as $error) {
+                $this->addFlash('warning', $error);
+            }
+        }
+
+        if ($result['failed'] > 0 && $result['success'] === 0) {
+            $this->addFlash('error', sprintf(
+                'Failed to import %d rows',
+                $result['failed']
+            ));
+        }
+
         return $this->redirectToRoute('app_import_export');
     }
 }

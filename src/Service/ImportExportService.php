@@ -5,11 +5,14 @@ namespace App\Service;
 use App\Entity\BaseProduct;
 use App\Entity\Grocery;
 use App\Entity\Price;
+use App\Entity\Recipe;
+use App\Entity\RecipeIngredient;
 use App\Enum\GroceryEnum;
 use App\Enum\ShopEnum;
 use App\Enum\UnitEnum;
 use App\Repository\BaseProductRepository;
 use App\Repository\GroceryRepository;
+use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -19,6 +22,7 @@ class ImportExportService
         private EntityManagerInterface $entityManager,
         private GroceryRepository $groceryRepository,
         private BaseProductRepository $baseProductRepository,
+        private RecipeRepository $recipeRepository,
     ) {}
 
     /**
@@ -250,6 +254,158 @@ class ImportExportService
                 $price->setCreatedAt($dateTime);
                 
                 $this->entityManager->persist($price);
+                $result['success']++;
+            } catch (\Exception $e) {
+                $result['errors'][] = "Row $row: " . $e->getMessage();
+                $result['failed']++;
+            }
+        }
+        
+        if ($result['success'] > 0) {
+            $this->entityManager->flush();
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Export all recipes to CSV format
+     * Each row represents a recipe with its ingredients
+     */
+    public function exportRecipes(): StreamedResponse
+    {
+        $response = new StreamedResponse();
+        $response->setCallback(function () {
+            $handle = fopen('php://output', 'w+');
+            
+            // Write CSV header
+            fputcsv($handle, ['Recipe Name', 'Description', 'Servings', 'Ingredient Base Product', 'Ingredient Quantity', 'Ingredient Unit']);
+            
+            // Get all recipes
+            $recipes = $this->recipeRepository->findAll();
+            
+            foreach ($recipes as $recipe) {
+                if ($recipe->getIngredients()->isEmpty()) {
+                    // Write recipe with no ingredients
+                    fputcsv($handle, [
+                        $recipe->getName(),
+                        $recipe->getDescription() ?? '',
+                        $recipe->getServings() ?? '',
+                        '',
+                        '',
+                        '',
+                    ]);
+                } else {
+                    // Write one row per ingredient
+                    foreach ($recipe->getIngredients() as $ingredient) {
+                        fputcsv($handle, [
+                            $recipe->getName(),
+                            $recipe->getDescription() ?? '',
+                            $recipe->getServings() ?? '',
+                            $ingredient->getBaseProduct()->getName(),
+                            $ingredient->getQuantity(),
+                            $ingredient->getUnit()->value,
+                        ]);
+                    }
+                }
+            }
+            
+            fclose($handle);
+        });
+        
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="recipes_' . date('Y-m-d_His') . '.csv"');
+        
+        return $response;
+    }
+
+    /**
+     * Import recipes from CSV file
+     * 
+     * @param resource $file
+     * @return array{success: int, failed: int, errors: string[]}
+     */
+    public function importRecipes($file): array
+    {
+        $result = ['success' => 0, 'failed' => 0, 'errors' => []];
+        
+        if (feof($file)) {
+            rewind($file);
+        }
+        
+        // Skip header
+        fgetcsv($file);
+        
+        $row = 0;
+        $recipeCache = [];  // Cache to avoid creating duplicate recipes
+        
+        while (($data = fgetcsv($file)) !== false) {
+            $row++;
+            
+            if (empty($data[0])) {
+                continue;
+            }
+            
+            try {
+                $recipeName = $data[0];
+                $description = !empty($data[1]) ? $data[1] : null;
+                $servings = !empty($data[2]) ? (int)$data[2] : null;
+                $baseProductName = $data[3] ?? null;
+                $quantity = $data[4] ?? null;
+                $unit = $data[5] ?? null;
+                
+                // Get or create recipe
+                $recipe = $recipeCache[$recipeName] ?? null;
+                if (!$recipe) {
+                    $recipe = $this->recipeRepository->findOneBy(['name' => $recipeName]);
+                    if (!$recipe) {
+                        $recipe = new Recipe();
+                        $recipe->setName($recipeName);
+                        $recipe->setDescription($description);
+                        $recipe->setServings($servings);
+                        $this->entityManager->persist($recipe);
+                        $recipeCache[$recipeName] = $recipe;
+                    }
+                }
+                
+                // If there's no ingredient data, skip ingredient creation
+                if (empty($baseProductName)) {
+                    $result['success']++;
+                    continue;
+                }
+                
+                // Find base product
+                $baseProduct = $this->baseProductRepository->findOneBy(['name' => $baseProductName]);
+                if (!$baseProduct) {
+                    $result['errors'][] = "Row $row: Base Product '$baseProductName' not found for recipe '$recipeName'";
+                    $result['failed']++;
+                    continue;
+                }
+                
+                // Validate unit enum
+                try {
+                    $unitEnum = UnitEnum::from($unit);
+                } catch (\ValueError) {
+                    $result['errors'][] = "Row $row: Invalid unit '$unit' for recipe '$recipeName'";
+                    $result['failed']++;
+                    continue;
+                }
+                
+                // Validate quantity
+                if (!is_numeric($quantity) || $quantity <= 0) {
+                    $result['errors'][] = "Row $row: Invalid quantity '$quantity' for recipe '$recipeName'";
+                    $result['failed']++;
+                    continue;
+                }
+                
+                // Create recipe ingredient
+                $ingredient = new RecipeIngredient();
+                $ingredient->setRecipe($recipe);
+                $ingredient->setBaseProduct($baseProduct);
+                $ingredient->setQuantity((float)$quantity);
+                $ingredient->setUnit($unitEnum);
+                
+                $this->entityManager->persist($ingredient);
                 $result['success']++;
             } catch (\Exception $e) {
                 $result['errors'][] = "Row $row: " . $e->getMessage();

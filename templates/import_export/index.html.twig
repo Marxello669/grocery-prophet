@@ -33,6 +33,10 @@
                             <twig:ux:icon name="lucide:download" />
                             Export Prices
                         </a>
+                        <a href="{{ path('app_export_recipes') }}" class="btn btn-primary btn-block" download>
+                            <twig:ux:icon name="lucide:download" />
+                            Export Recipes
+                        </a>
                     </div>
 
                     <div class="divider my-4"></div>
@@ -42,6 +46,7 @@
                         <ul class="list-disc list-inside space-y-1">
                             <li><strong>Groceries:</strong> Name, Type, Unit, Base Product (optional)</li>
                             <li><strong>Prices:</strong> Grocery Name, Shop, Value, Date</li>
+                            <li><strong>Recipes:</strong> Recipe Name, Description, Servings, Ingredient Base Product, Ingredient Quantity, Ingredient Unit</li>
                         </ul>
                     </div>
                 </div>
@@ -77,6 +82,22 @@
                                     <span class="label-text text-sm font-semibold">Import Prices</span>
                                 </div>
                                 <input type="file" name="prices_file" accept=".csv" class="file-input file-input-bordered file-input-sm w-full" required />
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-sm w-full mt-2">
+                                <twig:ux:icon name="lucide:upload" />
+                                Import
+                            </button>
+                        </form>
+
+                        <div class="divider my-2"></div>
+
+                        {# Recipes Import #}
+                        <form action="{{ path('app_import_recipes') }}" method="POST" enctype="multipart/form-data">
+                            <label class="form-control w-full">
+                                <div class="label">
+                                    <span class="label-text text-sm font-semibold">Import Recipes</span>
+                                </div>
+                                <input type="file" name="recipes_file" accept=".csv" class="file-input file-input-bordered file-input-sm w-full" required />
                             </label>
                             <button type="submit" class="btn btn-primary btn-sm w-full mt-2">
                                 <twig:ux:icon name="lucide:upload" />
@@ -153,6 +174,18 @@ Milk,lidl,0.89,2026-04-18
 Chicken Breast,pingo_doce,5.49,2026-04-18
 Rice,continente,2.99,2026-04-17</code></pre>
                         </div>
+
+                        {# Recipes Example #}
+                        <div>
+                            <p class="text-xs font-semibold mb-2 text-base-content/70">recipes.csv</p>
+                            <pre class="bg-base-200 p-3 rounded text-xs overflow-x-auto"><code>Recipe Name,Description,Servings,Ingredient Base Product,Ingredient Quantity,Ingredient Unit
+Spaghetti Carbonara,Italian pasta dish,4,Pasta,400,g
+Spaghetti Carbonara,Italian pasta dish,4,Bacon,200,g
+Spaghetti Carbonara,Italian pasta dish,4,Eggs,3,unit
+Spaghetti Carbonara,Italian pasta dish,4,Parmesan,100,g
+Caesar Salad,Fresh salad,2,Romaine Lettuce,1,unit
+Caesar Salad,Fresh salad,2,Parmesan,50,g</code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,6 +200,8 @@ Rice,continente,2.99,2026-04-17</code></pre>
                     <li><strong>Header Row:</strong> First row should contain column names (will be skipped)</li>
                     <li><strong>Duplicate Names:</strong> Groceries with duplicate names will not be imported</li>
                     <li><strong>Referenced Groceries:</strong> When importing prices, the grocery must already exist in the database</li>
+                    <li><strong>Referenced Base Products:</strong> When importing recipes, the base product must already exist in the database</li>
+                    <li><strong>Recipe Ingredients:</strong> Multiple rows with the same recipe name will be treated as different ingredients of that recipe</li>
                     <li><strong>Enum Values:</strong> Only use the exact values listed in the reference section above</li>
                     <li><strong>Date Format:</strong> Prices must use YYYY-MM-DD date format</li>
                     <li><strong>Error Reporting:</strong> All import errors will be displayed after the import attempt</li>

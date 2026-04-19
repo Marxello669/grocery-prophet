@@ -73,19 +73,6 @@
                                                class="btn btn-ghost btn-sm btn-xs">
                                                 <twig:ux:icon name="lucide:eye" class="h-4 w-4" />
                                             </a>
-                                            <a href="{{ path('app_recipe_edit', {id: recipe.id}) }}"
-                                               class="btn btn-ghost btn-sm btn-xs">
-                                                <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
-                                            </a>
-                                            <form method="POST"
-                                                  action="{{ path('app_recipe_delete', {id: recipe.id}) }}"
-                                                  style="display:inline;"
-                                                  onsubmit="return confirm('Are you sure?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
-                                                <button type="submit" class="btn btn-ghost btn-sm btn-xs text-error">
-                                                    <twig:ux:icon name="lucide:trash-2" class="h-4 w-4" />
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -104,10 +91,6 @@
                     <div class="text-5xl mb-4">👨‍🍳</div>
                     <p class="font-display text-xl text-base-content/60 mb-2">No recipes yet</p>
                     <p class="text-sm text-base-content/40 mb-6">Create your first recipe to get started.</p>
-                    <a href="{{ path('app_recipe_new') }}" class="btn btn-primary">
-                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
-                        Create Recipe
-                    </a>
                 </div>
             {% endif %}
         </div>
