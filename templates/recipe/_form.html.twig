@@ -1,0 +1,124 @@
+{{ form_start(form, { attr: { class: 'flex flex-col gap-5'}}) }}
+
+<div class="flex flex-col gap-1.5">
+    {{ form_label(form.name, 'Recipe name', {
+        label_attr: { class: 'text-sm font-medium text-base-content' }
+    }) }}
+
+    <label
+        class="input input-bordered flex items-center gap-2 {{ form.name.vars.errors|length > 0 ? 'input-error' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+        </svg>
+        {{ form_widget(form.name, {
+            attr: {
+                class:        'grow bg-transparent outline-none text-sm',
+                placeholder:  'e.g. Pasta Carbonara',
+                autocomplete: 'off'
+            }
+        }) }}
+    </label>
+
+    {% if form.name.vars.errors|length > 0 %}
+        <div class="flex items-center gap-1.5 text-error text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
+                 viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"/>
+            </svg>
+            {{ form_errors(form.name) }}
+        </div>
+    {% else %}
+        <p class="text-xs text-base-content/40">The name of the recipe.</p>
+    {% endif %}
+</div>
+
+<div class="flex flex-col gap-1.5">
+    {{ form_label(form.description, 'Description', {
+        label_attr: { class: 'text-sm font-medium text-base-content' }
+    }) }}
+
+    {{ form_widget(form.description, {
+        attr: {
+            class:        'textarea textarea-bordered text-sm' ~ (form.description.vars.errors|length > 0 ? ' textarea-error' : ''),
+            placeholder:  'Recipe instructions and notes (optional)',
+            rows:         4
+        }
+    }) }}
+
+    {% if form.description.vars.errors|length > 0 %}
+        <div class="flex items-center gap-1.5 text-error text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
+                 viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"/>
+            </svg>
+            {{ form_errors(form.description) }}
+        </div>
+    {% else %}
+        <p class="text-xs text-base-content/40">Instructions and notes for the recipe (optional).</p>
+    {% endif %}
+</div>
+
+<div class="flex flex-col gap-1.5">
+    {{ form_label(form.servings, 'Servings', {
+        label_attr: { class: 'text-sm font-medium text-base-content' }
+    }) }}
+
+    <label
+        class="input input-bordered flex items-center gap-2 {{ form.servings.vars.errors|length > 0 ? 'input-error' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-40 shrink-0"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 4H9m6 16H9m6-8H9"/>
+        </svg>
+        {{ form_widget(form.servings, {
+            attr: {
+                class:        'grow bg-transparent outline-none text-sm',
+                placeholder:  'Number of servings (optional)',
+                type:         'number'
+            }
+        }) }}
+    </label>
+
+    {% if form.servings.vars.errors|length > 0 %}
+        <div class="flex items-center gap-1.5 text-error text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
+                 viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"/>
+            </svg>
+            {{ form_errors(form.servings) }}
+        </div>
+    {% else %}
+        <p class="text-xs text-base-content/40">Number of servings (optional).</p>
+    {% endif %}
+</div>
+
+{% if form.vars.errors|length > 0 %}
+    <div role="alert" class="alert alert-error alert-soft py-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="text-sm">{{ form_errors(form) }}</div>
+    </div>
+{% endif %}
+
+<div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
+    <a href="{{ path('app_recipe_index') }}" class="btn btn-ghost btn-sm sm:btn-md">
+        <twig:ux:icon name="lucide:x" class="h-4 w-4" />
+        Cancel
+    </a>
+    <button type="submit" class="btn btn-primary btn-sm sm:btn-md">
+        <twig:ux:icon name="lucide:save" class="h-4 w-4" />
+        {{ submit_label|default("Add Recipe") }}
+    </button>
+</div>
+
+{{ form_end(form) }}

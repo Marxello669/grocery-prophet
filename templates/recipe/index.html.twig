@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recipes{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm py-0">
+        <ul>
+            <li class="text-base-content/70">Recipes</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+        {# ── TABLE CARD ── #}
+        <div class="card bg-base-100 shadow-sm overflow-hidden">
+            {# Card header #}
+            <div class="card-body p-4 sm:p-6 gap-4 border-b border-base-300">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <twig:ux:icon name="lucide:utensils" class="h-5 w-5 text-primary"/>
+                    </div>
+                    <div>
+                        <h1 class="font-display text-lg sm:text-xl text-base-content leading-tight">Recipes</h1>
+                        <p class="text-xs text-base-content/50 mt-0.5">Manage your recipes and calculate ingredient costs</p>
+                    </div>
+                    <a href="{{ path('app_recipe_new') }}" class="btn btn-primary btn-sm ml-auto">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        New Recipe
+                    </a>
+                </div>
+            </div>
+
+            {# Table #}
+            {% if recipes|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-base-200/50 border-b border-base-300">
+                            <tr class="text-sm text-base-content/70 font-semibold">
+                                <th class="px-4 sm:px-6 py-3 text-left">Name</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Ingredients</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Servings</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Total Cost</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base-200">
+                            {% for recipe in recipes %}
+                                <tr class="hover:bg-base-200/30 transition-colors">
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <a href="{{ path('app_recipe_show', {id: recipe.id}) }}"
+                                           class="link link-hover font-medium text-base-content">
+                                            {{ recipe.name }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center">
+                                        <span class="badge badge-primary badge-sm">
+                                            {{ recipe.ingredients|length }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center">
+                                        {{ recipe.servings ?? '-' }}
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-right">
+                                        <span class="font-display font-bold text-primary">
+                                            {{ (recipe.totalCost|number_format(2, ',', '.')) }}€
+                                        </span>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="{{ path('app_recipe_show', {id: recipe.id}) }}"
+                                               class="btn btn-ghost btn-sm btn-xs">
+                                                <twig:ux:icon name="lucide:eye" class="h-4 w-4" />
+                                            </a>
+                                            <a href="{{ path('app_recipe_edit', {id: recipe.id}) }}"
+                                               class="btn btn-ghost btn-sm btn-xs">
+                                                <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+                                            </a>
+                                            <form method="POST"
+                                                  action="{{ path('app_recipe_delete', {id: recipe.id}) }}"
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+                                                <button type="submit" class="btn btn-ghost btn-sm btn-xs text-error">
+                                                    <twig:ux:icon name="lucide:trash-2" class="h-4 w-4" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {# Footer with count #}
+                <div class="px-4 sm:px-6 py-3 bg-base-200/30 text-sm text-base-content/60 border-t border-base-300">
+                    Total: <span class="font-semibold">{{ recipes|length }}</span> recipe{{ recipes|length != 1 ? 's' : '' }}
+                </div>
+            {% else %}
+                {# Empty state #}
+                <div class="p-8 sm:p-12 text-center">
+                    <div class="text-5xl mb-4">👨‍🍳</div>
+                    <p class="font-display text-xl text-base-content/60 mb-2">No recipes yet</p>
+                    <p class="text-sm text-base-content/40 mb-6">Create your first recipe to get started.</p>
+                    <a href="{{ path('app_recipe_new') }}" class="btn btn-primary">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        Create Recipe
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

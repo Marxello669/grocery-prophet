@@ -1,0 +1,300 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ recipe.name }}{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm py-0">
+        <ul>
+            <li><a href="{{ path('app_recipe_index') }}">Recipes</a></li>
+            <li class="text-base-content/70">{{ recipe.name }}</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+
+        {# ── RECIPE HEADER CARD ── #}
+        <div class="card bg-base-100 shadow-sm">
+            <div class="card-body p-4 sm:p-8 gap-6">
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <twig:ux:icon name="lucide:utensils" class="h-6 w-6 text-primary"/>
+                        </div>
+                        <div>
+                            <h1 class="font-display text-2xl sm:text-3xl text-base-content leading-tight">
+                                {{ recipe.name }}
+                            </h1>
+                            {% if recipe.description %}
+                                <p class="text-sm text-base-content/60 mt-2 whitespace-pre-wrap">{{ recipe.description }}</p>
+                            {% endif %}
+                            {% if recipe.servings %}
+                                <p class="text-xs text-base-content/50 mt-2">
+                                    <span class="badge badge-ghost">{{ recipe.servings }} servings</span>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <a href="{{ path('app_recipe_edit', {id: recipe.id}) }}"
+                           class="btn btn-primary btn-sm">
+                            <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+                            Edit
+                        </a>
+                        <form method="POST"
+                              action="{{ path('app_recipe_delete', {id: recipe.id}) }}"
+                              style="display:inline;"
+                              onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+                            <button type="submit" class="btn btn-error btn-sm">
+                                <twig:ux:icon name="lucide:trash-2" class="h-4 w-4" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {# Cost Summary #}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-base-300">
+                    <div class="bg-base-200/50 rounded-lg p-4">
+                        <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Total Cost</p>
+                        <p class="text-2xl sm:text-3xl font-display font-bold text-primary mt-1">
+                            {{ (recipe.totalCost|number_format(2, ',', '.')) }}€
+                        </p>
+                    </div>
+                    <div class="bg-base-200/50 rounded-lg p-4">
+                        <p class="text-xs text-base-content/50 uppercase tracking-wider font-medium">Ingredients</p>
+                        <p class="text-2xl sm:text-3xl font-display font-bold text-base-content mt-1">
+                            {{ recipe.ingredients|length }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {# ── INGREDIENTS SECTION ── #}
+        <div class="card bg-base-100 shadow-sm overflow-hidden">
+            <div class="card-body p-4 sm:p-6 gap-4 border-b border-base-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display text-lg text-base-content">Ingredients</h2>
+                        <p class="text-sm text-base-content/50 mt-1">Click an ingredient to edit or delete it</p>
+                    </div>
+                    <button onclick="document.getElementById('add_ingredient_modal').showModal()" class="btn btn-primary btn-sm">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        Add Ingredient
+                    </button>
+                </div>
+            </div>
+
+            {% if recipe.ingredients|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-base-200/50 border-b border-base-300">
+                            <tr class="text-sm text-base-content/70 font-semibold">
+                                <th class="px-4 sm:px-6 py-3 text-left">Base Product</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Quantity</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Unit</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Lowest Price</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Shop</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Ingredient Cost</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base-200">
+                            {% for ingredient in recipe.ingredients %}
+                                <tr class="hover:bg-base-200/30 transition-colors">
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <a href="{{ path('app_base_product_show', {id: ingredient.baseProduct.id}) }}"
+                                           class="link link-hover font-medium text-base-content">
+                                            {{ ingredient.baseProduct.name }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center">
+                                        {{ ingredient.quantity|number_format(2, ',', '.') }}
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center">
+                                        <span class="badge badge-ghost badge-sm">{{ ingredient.unit.label }}</span>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-right">
+                                        {% set hasPrice = ingredient.lowestPriceShop %}
+                                        {% if hasPrice %}
+                                            <span class="text-sm">
+                                                {{ (ingredient.lowestPricePerUnit|number_format(2, ',', '.')) }}€
+                                            </span>
+                                        {% else %}
+                                            <span class="text-sm text-base-content/40">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-right">
+                                        {% if ingredient.lowestPriceShop %}
+                                            <span class="badge badge-ghost badge-sm">{{ ingredient.lowestPriceShop }}</span>
+                                        {% else %}
+                                            <span class="text-sm text-base-content/40">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-right font-semibold">
+                                        {{ (ingredient.lowestPrice|number_format(2, ',', '.')) }}€
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="{{ path('app_recipe_ingredient_edit', {id: ingredient.id}) }}"
+                                               class="btn btn-ghost btn-sm btn-xs">
+                                                <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+                                            </a>
+                                            <form method="POST"
+                                                  action="{{ path('app_recipe_ingredient_delete', {id: ingredient.id}) }}"
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
+                                                <button type="submit" class="btn btn-ghost btn-sm btn-xs text-error">
+                                                    <twig:ux:icon name="lucide:trash-2" class="h-4 w-4" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="px-4 sm:px-6 py-3 bg-base-200/30 text-sm text-base-content/60 border-t border-base-300">
+                    Total: <span class="font-semibold">{{ recipe.ingredients|length }}</span> ingredient{{ recipe.ingredients|length != 1 ? 's' : '' }}
+                </div>
+            {% else %}
+                <div class="p-8 sm:p-12 text-center">
+                    <div class="text-5xl mb-4">📦</div>
+                    <p class="font-display text-lg text-base-content/60 mb-2">No ingredients yet</p>
+                    <p class="text-sm text-base-content/40 mb-6">Add your first ingredient to this recipe.</p>
+                    <button onclick="document.getElementById('add_ingredient_modal').showModal()" class="btn btn-primary">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        Add Ingredient
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {# ── ADD INGREDIENT MODAL ── #}
+    <dialog id="add_ingredient_modal" class="modal">
+        <div class="modal-box w-full max-w-md">
+            <div class="flex items-center justify-between pb-4 border-b border-base-300">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4 text-primary"/>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-base text-base-content">Add Ingredient</h3>
+                        <p class="text-xs text-base-content/50">Add a new ingredient to {{ recipe.name }}</p>
+                    </div>
+                </div>
+                <form method="dialog">
+                    <button class="btn btn-ghost btn-sm btn-square">
+                        <twig:ux:icon name="lucide:x" class="h-4 w-4"/>
+                    </button>
+                </form>
+            </div>
+
+            {{ form_start(ingredient_form, {
+                action: path('app_recipe_ingredient_add', {id: recipe.id}),
+                attr: { class: 'flex flex-col gap-4 py-4' }
+            }) }}
+
+                <div class="flex flex-col gap-1.5">
+                    {{ form_label(ingredient_form.baseProduct, 'Base Product', {
+                        label_attr: { class: 'text-sm font-medium text-base-content' }
+                    }) }}
+
+                    {{ form_widget(ingredient_form.baseProduct, {
+                        attr: {
+                            class: 'select select-bordered w-full text-sm' ~ (ingredient_form.baseProduct.vars.errors|length > 0 ? ' select-error' : '')
+                        }
+                    }) }}
+
+                    {% if ingredient_form.baseProduct.vars.errors|length > 0 %}
+                        <div class="flex items-center gap-1.5 text-error text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ form_errors(ingredient_form.baseProduct) }}
+                        </div>
+                    {% else %}
+                        <p class="text-xs text-base-content/40">Select the base product for this ingredient.</p>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        {{ form_label(ingredient_form.quantity, 'Quantity', {
+                            label_attr: { class: 'text-sm font-medium text-base-content' }
+                        }) }}
+
+                        <label class="input input-bordered flex items-center gap-2 {{ ingredient_form.quantity.vars.errors|length > 0 ? 'input-error' : '' }}">
+                            {{ form_widget(ingredient_form.quantity, {
+                                attr: {
+                                    class: 'grow bg-transparent outline-none text-sm',
+                                    placeholder: '0.00',
+                                    step: '0.01'
+                                }
+                            }) }}
+                        </label>
+
+                        {% if ingredient_form.quantity.vars.errors|length > 0 %}
+                            <div class="flex items-center gap-1.5 text-error text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ form_errors(ingredient_form.quantity) }}
+                            </div>
+                        {% else %}
+                            <p class="text-xs text-base-content/40">Quantity of the ingredient.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        {{ form_label(ingredient_form.unit, 'Unit', {
+                            label_attr: { class: 'text-sm font-medium text-base-content' }
+                        }) }}
+
+                        {{ form_widget(ingredient_form.unit, {
+                            attr: {
+                                class: 'select select-bordered w-full text-sm' ~ (ingredient_form.unit.vars.errors|length > 0 ? ' select-error' : '')
+                            }
+                        }) }}
+
+                        {% if ingredient_form.unit.vars.errors|length > 0 %}
+                            <div class="flex items-center gap-1.5 text-error text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ form_errors(ingredient_form.unit) }}
+                            </div>
+                        {% else %}
+                            <p class="text-xs text-base-content/40">Unit of measurement.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
+                    <button type="button" class="btn btn-ghost btn-sm w-full" onclick="document.getElementById('add_ingredient_modal').close()">
+                        <twig:ux:icon name="lucide:x" class="h-4 w-4" />
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <twig:ux:icon name="lucide:save" class="h-4 w-4" />
+                        Add Ingredient
+                    </button>
+                </div>
+
+            {{ form_end(ingredient_form) }}
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+{% endblock %}

@@ -107,7 +107,7 @@
                 <ul class="menu menu-md w-full p-0 gap-1">
 
                     {# Helper macro — sets `active` class when the route matches #}
-                    {% set _route = app.request.attributes.get('_route') %}
+                    {% set _route = app.current_route %}
 
                     <li class="menu-title text-sm mt-2">Catalogue</li>
 
@@ -124,6 +124,14 @@
                            class="{{ _route == 'app_shopping_list_index' ? 'active' : '' }}">
                             <twig:ux:icon name="lucide:shopping-cart"/>
                             Shopping List
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ path('app_recipe_index') }}"
+                           class="{{ _route == 'app_recipe_index' ? 'active' : '' }}">
+                            <twig:ux:icon name="lucide:fork-knife" />
+                            Recipes
                         </a>
                     </li>
 

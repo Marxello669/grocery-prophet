@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Recipe{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm py-0">
+        <ul>
+            <li><a href="{{ path('app_recipe_index') }}">Recipes</a></li>
+            <li class="text-base-content/70">New</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-5">
+
+        {# ── FORM CARD ── #}
+        <div class="card bg-base-100 shadow-sm">
+            <div class="card-body p-4 sm:p-8 gap-6">
+
+                {# Card header #}
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pb-4 border-b border-base-300">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <twig:ux:icon name="lucide:plus" class="h-5 w-5 text-primary"/>
+                    </div>
+                    <div>
+                        <h1 class="font-display text-lg sm:text-xl text-base-content leading-tight">New recipe</h1>
+                        <p class="text-xs text-base-content/50 mt-0.5">Fill in the details below to create a new recipe.</p>
+                    </div>
+                </div>
+
+                {{ include('recipe/_form.html.twig', {form: form}) }}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
