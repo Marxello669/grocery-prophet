@@ -7,6 +7,9 @@
     <div class="breadcrumbs text-sm py-0">
         <ul>
             <li><a href="{{ path('app_index') }}">Products</a></li>
+            {% if grocery.baseProduct %}
+                <li><a href="{{ path('app_base_product_show', {id: grocery.baseProduct.id}) }}">{{ grocery.baseProduct.name }}</a></li>
+            {% endif %}
             <li><a href="{{ path('app_grocery_show', {id: grocery.id}) }}">{{ grocery.name }}</a></li>
             <li class="text-base-content/70">Edit</li>
         </ul>

@@ -37,6 +37,32 @@
 </div>
 
 <div class="flex flex-col gap-1.5">
+    {{ form_label(form.baseProduct, 'Base Product', {
+        label_attr: { class: 'text-sm font-medium text-base-content' }
+    }) }}
+
+    {{ form_widget(form.baseProduct, {
+        attr: {
+            class: 'select select-bordered w-full text-sm' ~ (form.baseProduct.vars.errors|length > 0 ? ' select-error' : '')
+        }
+    }) }}
+
+    {% if form.baseProduct.vars.errors|length > 0 %}
+        <div class="flex items-center gap-1.5 text-error text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0"
+                 viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"/>
+            </svg>
+            {{ form_errors(form.baseProduct) }}
+        </div>
+    {% else %}
+        <p class="text-xs text-base-content/40">Select the base product this grocery is a variant of (e.g., Rice, Milk).</p>
+    {% endif %}
+</div>
+
+<div class="flex flex-col gap-1.5">
     {{ form_label(form.type, 'Category', {
         label_attr: { class: 'text-sm font-medium text-base-content' }
     }) }}
@@ -101,7 +127,12 @@
 {% endif %}
 
 <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
-    <button type="submit" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
+    <a href="{{ path('app_index') }}" class="btn btn-ghost btn-sm sm:btn-md">
+        <twig:ux:icon name="lucide:x" class="h-4 w-4" />
+        Cancel
+    </a>
+    <button type="submit" class="btn btn-primary btn-sm sm:btn-md">
+        <twig:ux:icon name="lucide:save" class="h-4 w-4" />
         {{ submit_label|default("Add Product") }}
     </button>
 </div>

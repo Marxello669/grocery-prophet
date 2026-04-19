@@ -32,6 +32,9 @@ class Grocery
     #[ORM\OneToMany(targetEntity: Price::class, mappedBy: 'grocery')]
     private Collection $prices;
 
+    #[ORM\ManyToOne(inversedBy: 'groceries')]
+    private ?BaseProduct $baseProduct = null;
+
     public function __construct()
     {
         $this->prices = new ArrayCollection();
@@ -104,6 +107,18 @@ class Grocery
     public function setUnit(UnitEnum $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getBaseProduct(): ?BaseProduct
+    {
+        return $this->baseProduct;
+    }
+
+    public function setBaseProduct(?BaseProduct $baseProduct): static
+    {
+        $this->baseProduct = $baseProduct;
 
         return $this;
     }

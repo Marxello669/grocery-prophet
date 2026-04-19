@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\BaseProduct;
 use App\Entity\Grocery;
 use App\Enum\GroceryEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -23,7 +24,8 @@ class GroceryRepository extends ServiceEntityRepository
         string       $query,
         int          $offset,
         int          $quantity,
-        ?GroceryEnum $type = null
+        ?GroceryEnum $type = null,
+        ?BaseProduct $baseProduct = null
     ): QueryBuilder
     {
         $qb = $this->createQueryBuilder('g')
@@ -37,6 +39,11 @@ class GroceryRepository extends ServiceEntityRepository
         if (!is_null($type)) {
             $qb->andWhere('g.type = :type')
                 ->setParameter('type', $type->value);
+        }
+
+        if (!is_null($baseProduct)) {
+            $qb->andWhere('g.baseProduct = :baseProduct')
+                ->setParameter('baseProduct', $baseProduct);
         }
 
         return $qb;

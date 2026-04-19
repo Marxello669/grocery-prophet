@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ base_product.name }}{% endblock %}
+
+{% block page_header %}
+    <div class="breadcrumbs text-sm py-0">
+        <ul>
+            <li><a href="{{ path('app_base_product_index') }}">Base Products</a></li>
+            <li class="text-base-content/70">{{ base_product.name }}</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+
+        {# ── PRODUCT HEADER CARD ── #}
+        <div class="card bg-base-100 shadow-sm">
+            <div class="card-body p-4 sm:p-8 gap-6">
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <twig:ux:icon name="lucide:layers" class="h-6 w-6 text-primary"/>
+                        </div>
+                        <div>
+                            <h1 class="font-display text-2xl sm:text-3xl text-base-content leading-tight">
+                                {{ base_product.name }}
+                            </h1>
+                            <p class="text-sm text-base-content/50 mt-1">
+                                {{ base_product.groceries|length }} product{{ base_product.groceries|length != 1 ? 's' : '' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <a href="{{ path('app_base_product_edit', {id: base_product.id}) }}"
+                           class="btn btn-primary btn-sm flex-1 sm:flex-none">
+                            <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+                            Edit
+                        </a>
+                        <form method="POST"
+                              action="{{ path('app_base_product_delete', {id: base_product.id}) }}"
+                              style="display:inline;"
+                              onsubmit="return confirm('Are you sure you want to delete this base product? All associated groceries will also be deleted.');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ base_product.id) }}">
+                            <button type="submit" class="btn btn-error btn-sm">
+                                <twig:ux:icon name="lucide:trash-2" class="h-4 w-4" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {# ── GROCERIES SECTION ── #}
+        <div class="card bg-base-100 shadow-sm overflow-hidden">
+            <div class="card-body p-4 sm:p-6 gap-4 border-b border-base-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display text-lg text-base-content">Associated Groceries</h2>
+                        <p class="text-sm text-base-content/50 mt-1">Brands and varieties for {{ base_product.name }}</p>
+                    </div>
+                    <a href="{{ path('app_grocery_new') }}" class="btn btn-primary btn-sm">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        Add Variety
+                    </a>
+                </div>
+            </div>
+
+            {% if base_product.groceries|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-base-200/50 border-b border-base-300">
+                            <tr class="text-sm text-base-content/70 font-semibold">
+                                <th class="px-4 sm:px-6 py-3 text-left">Name</th>
+                                <th class="px-4 sm:px-6 py-3 text-left hidden sm:table-cell">Type</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Unit</th>
+                                <th class="px-4 sm:px-6 py-3 text-center">Prices</th>
+                                <th class="px-4 sm:px-6 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base-200">
+                            {% for grocery in base_product.groceries %}
+                                <tr class="hover:bg-base-200/30 transition-colors">
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <a href="{{ path('app_grocery_show', {id: grocery.id}) }}"
+                                           class="link link-hover font-medium text-base-content">
+                                            {{ grocery.name }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 hidden sm:table-cell">
+                                        <span class="badge badge-ghost badge-sm">
+                                            {{ grocery.type.label }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center text-sm">
+                                        {{ grocery.unit.label }}
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4 text-center">
+                                        <span class="badge badge-info badge-sm">
+                                            {{ grocery.prices|length }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 sm:px-6 py-4">
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="{{ path('app_grocery_show', {id: grocery.id}) }}"
+                                               class="btn btn-ghost btn-sm btn-xs"
+                                               title="View">
+                                                <twig:ux:icon name="lucide:eye" class="h-4 w-4" />
+                                            </a>
+                                            <a href="{{ path('app_grocery_edit', {id: grocery.id}) }}"
+                                               class="btn btn-ghost btn-sm btn-xs"
+                                               title="Edit">
+                                                <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="px-4 sm:px-6 py-3 bg-base-200/30 text-sm text-base-content/60 border-t border-base-300">
+                    Total: <span class="font-semibold">{{ base_product.groceries|length }}</span> grocery{{ base_product.groceries|length != 1 ? 'ies' : '' }}
+                </div>
+            {% else %}
+                <div class="p-8 sm:p-12 text-center">
+                    <div class="text-5xl mb-4">📦</div>
+                    <p class="font-display text-lg text-base-content/60 mb-2">No groceries yet</p>
+                    <p class="text-sm text-base-content/40 mb-6">Add your first grocery variety to this base product.</p>
+                    <a href="{{ path('app_grocery_new') }}" class="btn btn-primary">
+                        <twig:ux:icon name="lucide:plus" class="h-4 w-4" />
+                        Add Variety
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

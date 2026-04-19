@@ -1,5 +1,5 @@
 <li class="product-card">
-    <div class="grid grid-cols-1 md:grid-cols-[2.5rem_1fr_12rem_6rem_9rem_1rem] gap-3 md:gap-x-4 md:items-center
+    <div class="grid grid-cols-1 md:grid-cols-[2.5rem_1fr_12rem_10rem_6rem_9rem_1rem] gap-3 md:gap-x-4 md:items-center
                       px-4 py-4 md:px-5 md:py-3.5 border-b border-base-200 group cursor-default">
 
         <div class="flex items-center gap-3 md:contents">
@@ -15,14 +15,17 @@
                    class="hover:underline text-sm font-semibold text-base-content leading-tight block md:truncate">
                     {{ entry.name }}
                 </a>
-                {# Mobile only: Type badge #}
-                <div class="md:hidden mt-0.5">
+                {# Mobile only: Type badge and base product #}
+                <div class="md:hidden mt-0.5 flex gap-1.5">
                     <span class="badge badge-ghost badge-xs">{{ entry.type.label }}</span>
+                    {% if entry.baseProduct %}
+                        <a href="{{ path('app_base_product_show', {id: entry.baseProduct.id}) }}" class="hover:underline badge badge-accent badge-xs">{{ entry.baseProduct.name }}</a>
+                    {% endif %}
                 </div>
             </div>
 
             {# Mobile only: Add price button #}
-            <div class="md:hidden">
+            <div class="md:hidden flex flex-row justify-start gap-2">
                 <form method="post" action="{{ path('app_shopping_list_add', {id: entry.id}) }}">
                     <button type="submit"
                             class="btn btn-secondary btn-sm btn-circle">
@@ -39,6 +42,18 @@
 
         {# Desktop Type #}
         <span class="hidden md:inline badge badge-ghost badge-sm">{{ entry.type.label }}</span>
+
+        {# Desktop Base Product #}
+        <div class="hidden md:block">
+            {% if entry.baseProduct %}
+                <a href="{{ path('app_base_product_show', {id: entry.baseProduct.id}) }}"
+                   class="badge badge-accent badge-sm hover:badge-accent-focus hover:underline">
+                    {{ entry.baseProduct.name }}
+                </a>
+            {% else %}
+                <span class="text-sm text-base-content/40">-</span>
+            {% endif %}
+        </div>
 
         {# Price #}
         <div class="flex justify-between items-center md:justify-end md:text-right md:whitespace-nowrap">

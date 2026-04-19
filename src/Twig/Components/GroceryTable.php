@@ -2,9 +2,11 @@
 
 namespace App\Twig\Components;
 
+use App\Entity\BaseProduct;
 use App\Entity\Grocery;
 use App\Entity\Price;
 use App\Enum\GroceryEnum;
+use App\Repository\BaseProductRepository;
 use App\Repository\GroceryRepository;
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -30,9 +32,13 @@ final class GroceryTable
     #[LiveProp(writable: true)]
     public ?GroceryEnum $type = null;
 
+    #[LiveProp(writable: true)]
+    public ?int $baseProductId = null;
+
     public function __construct(
         private readonly GroceryRepository $groceryRepository,
-        private readonly PriceRepository   $priceRepository
+        private readonly PriceRepository   $priceRepository,
+        private readonly BaseProductRepository $baseProductRepository
     )
     {
     }
@@ -50,6 +56,22 @@ final class GroceryTable
         return GroceryEnum::cases();
     }
 
+    /**
+     * @return BaseProduct[]
+     */
+    public function getBaseProducts(): array
+    {
+        return $this->baseProductRepository->findAll();
+    }
+
+    public function getSelectedBaseProduct(): ?BaseProduct
+    {
+        if ($this->baseProductId === null) {
+            return null;
+        }
+        return $this->baseProductRepository->find($this->baseProductId);
+    }
+
 
     public function getEntries(): Paginator
     {
@@ -57,7 +79,8 @@ final class GroceryTable
 
         $this->query = $this->query ?? "";
 
-        $query = $this->groceryRepository->getPagination($this->query, $offset, $this->quantity, $this->type);
+        $baseProduct = $this->getSelectedBaseProduct();
+        $query = $this->groceryRepository->getPagination($this->query, $offset, $this->quantity, $this->type, $baseProduct);
 
         return new Paginator($query, true);
     }
@@ -84,6 +107,7 @@ final class GroceryTable
     {
         $this->query = "";
         $this->type = null;
+        $this->baseProductId = null;
         $this->page = 1;
     }
 

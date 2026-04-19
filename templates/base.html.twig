@@ -138,6 +138,14 @@
                     <li class="menu-title text-sm mt-4">Manage</li>
 
                     <li>
+                        <a href="{{ path('app_base_product_index') }}"
+                           class="{{ _route starts with 'app_base_product_' ? 'active' : '' }}">
+                            <twig:ux:icon name="lucide:layers" />
+                            Base Products
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ path('app_grocery_new') }}"
                            class="{{ _route == 'app_grocery_new' ? 'active' : '' }}">
                             <twig:ux:icon name="lucide:plus" />

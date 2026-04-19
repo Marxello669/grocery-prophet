@@ -24,11 +24,19 @@
                             <option value="{{ type.value }}">{{ type.label }}</option>
                         {% endfor %}
                     </select>
+
+                    {# Base Product select #}
+                    <select data-model="baseProductId" class="select select-bordered w-full sm:w-52 text-sm">
+                        <option value="">All base products</option>
+                        {% for baseProduct in this.baseProducts %}
+                            <option value="{{ baseProduct.id }}">{{ baseProduct.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
         </section>
 
-        {% if this.query is not empty or this.type is not null %}
+        {% if this.query is not empty or this.type is not null or this.baseProductId is not null %}
             <div id="active-filters" class="flex flex-wrap gap-2 items-center text-sm text-base-content/60">
                 <span class="font-medium">Active filters:</span>
                 {% if this.query is not empty %}
@@ -37,6 +45,10 @@
 
                 {% if this.type is not null %}
                     <span id="af-type" class="badge badge-secondary badge-soft">{{ this.type.label }}</span>
+                {% endif %}
+
+                {% if this.baseProductId is not null %}
+                    <span id="af-base-product" class="badge badge-accent badge-soft">{{ this.selectedBaseProduct.name }}</span>
                 {% endif %}
 
                 <button
@@ -53,12 +65,13 @@
 
         <section class="card bg-base-100 shadow-sm overflow-hidden">
             {# Table header #}
-            <div class="hidden md:grid grid-cols-[2.5rem_1fr_12rem_6rem_9rem_1rem] gap-x-4 items-center
+            <div class="hidden md:grid grid-cols-[2.5rem_1fr_12rem_10rem_6rem_9rem_1rem] gap-x-4 items-center
                   px-5 py-3 border-b border-base-300 text-xs font-semibold uppercase tracking-wider
                   text-base-content/40 select-none">
                 <span></span>
                 <span>Product</span>
                 <span>Type</span>
+                <span>Base Product</span>
                 <span class="text-right">Price</span>
                 <span>Shop</span>
                 <span class="text-right"></span>
