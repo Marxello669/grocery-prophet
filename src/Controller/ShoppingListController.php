@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Grocery;
+use App\Entity\Recipe;
 use App\Entity\ShoppingListItem;
 use App\Enum\ShopEnum;
 use App\Repository\GroceryRepository;
@@ -112,6 +113,37 @@ final class ShoppingListController extends AbstractController
         $this->addFlash('success', sprintf('%s added to shopping list.', $grocery->getName()));
 
         return $this->redirectToRoute('app_index');
+    }
+
+    #[Route('/add-recipe/{id}', name: 'app_shopping_list_add_recipe', methods: ['POST'])]
+    public function addRecipe(Recipe $recipe, ShoppingListItemRepository $repository, EntityManagerInterface $entityManager): Response
+    {
+        $addedCount = 0;
+
+        // Add all groceries from recipe ingredients to shopping list
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $baseProduct = $ingredient->getBaseProduct();
+            $groceries = $baseProduct->getGroceries();
+
+            foreach ($groceries as $grocery) {
+                $item = $repository->findOneBy(['grocery' => $grocery]);
+                if (!$item) {
+                    $item = new ShoppingListItem();
+                    $item->setGrocery($grocery);
+                    $item->setQuantity(1);
+                    $entityManager->persist($item);
+                } else {
+                    $item->setQuantity($item->getQuantity() + 1);
+                }
+                $addedCount++;
+            }
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf('%d items from recipe added to shopping list.', $addedCount));
+
+        return $this->redirectToRoute('app_recipe_show', ['id' => $recipe->getId()]);
     }
 
     #[Route('/remove/{id}', name: 'app_shopping_list_remove', methods: ['POST'])]

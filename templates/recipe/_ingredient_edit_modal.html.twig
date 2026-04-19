@@ -1,0 +1,123 @@
+<div class="modal-box w-full max-w-md">
+    <div class="flex items-center justify-between pb-4 border-b border-base-300">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+                <twig:ux:icon name="lucide:pencil" class="h-4 w-4 text-warning"/>
+            </div>
+            <div>
+                <h3 class="font-display text-base text-base-content">Edit Ingredient</h3>
+                <p class="text-xs text-base-content/50">Update ingredient details</p>
+            </div>
+        </div>
+        <form method="dialog">
+            <button class="btn btn-ghost btn-sm btn-square">
+                <twig:ux:icon name="lucide:x" class="h-4 w-4"/>
+            </button>
+        </form>
+    </div>
+
+    {{ form_start(form, {
+        action: path('app_recipe_ingredient_edit', {id: ingredient.id}),
+        attr: { class: 'flex flex-col gap-4 py-4' }
+    }) }}
+
+        <div class="flex flex-col gap-1.5">
+            {{ form_label(form.baseProduct, 'Base Product', {
+                label_attr: { class: 'text-sm font-medium text-base-content' }
+            }) }}
+
+            {{ form_widget(form.baseProduct, {
+                attr: {
+                    class: 'select select-bordered w-full text-sm' ~ (form.baseProduct.vars.errors|length > 0 ? ' select-error' : '')
+                }
+            }) }}
+
+            {% if form.baseProduct.vars.errors|length > 0 %}
+                <div class="flex items-center gap-1.5 text-error text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    {{ form_errors(form.baseProduct) }}
+                </div>
+            {% else %}
+                <p class="text-xs text-base-content/40">Select the base product for this ingredient.</p>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+                {{ form_label(form.quantity, 'Quantity', {
+                    label_attr: { class: 'text-sm font-medium text-base-content' }
+                }) }}
+
+                <label class="input input-bordered flex items-center gap-2 {{ form.quantity.vars.errors|length > 0 ? 'input-error' : '' }}">
+                    {{ form_widget(form.quantity, {
+                        attr: {
+                            class: 'grow bg-transparent outline-none text-sm',
+                            placeholder: '0.00',
+                            step: '0.01'
+                        }
+                    }) }}
+                </label>
+
+                {% if form.quantity.vars.errors|length > 0 %}
+                    <div class="flex items-center gap-1.5 text-error text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ form_errors(form.quantity) }}
+                    </div>
+                {% else %}
+                    <p class="text-xs text-base-content/40">Quantity of the ingredient.</p>
+                {% endif %}
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                {{ form_label(form.unit, 'Unit', {
+                    label_attr: { class: 'text-sm font-medium text-base-content' }
+                }) }}
+
+                {{ form_widget(form.unit, {
+                    attr: {
+                        class: 'select select-bordered w-full text-sm' ~ (form.unit.vars.errors|length > 0 ? ' select-error' : '')
+                    }
+                }) }}
+
+                {% if form.unit.vars.errors|length > 0 %}
+                    <div class="flex items-center gap-1.5 text-error text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ form_errors(form.unit) }}
+                    </div>
+                {% else %}
+                    <p class="text-xs text-base-content/40">Unit of measurement.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if form.vars.errors|length > 0 %}
+            <div role="alert" class="alert alert-error alert-soft py-2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div class="text-sm">{{ form_errors(form) }}</div>
+            </div>
+        {% endif %}
+
+        <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-base-300">
+            <button type="button" class="btn btn-ghost btn-sm w-full" onclick="document.getElementById('edit_ingredient_modal').close()">
+                <twig:ux:icon name="lucide:x" class="h-4 w-4" />
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary btn-sm">
+                <twig:ux:icon name="lucide:save" class="h-4 w-4" />
+                Update Ingredient
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+</div>
+<form method="dialog" class="modal-backdrop">
+    <button>close</button>
+</form>

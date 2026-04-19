@@ -54,15 +54,26 @@ final class RecipeController extends AbstractController
     {
         $ingredient = new RecipeIngredient();
         $ingredient->setRecipe($recipe);
-        $form = $this->createForm(RecipeIngredientType::class, $ingredient);
+        $ingredientForm = $this->createForm(RecipeIngredientType::class, $ingredient);
+        
+        $editForm = $this->createForm(RecipeType::class, $recipe);
+
+        // Create edit forms for each ingredient
+        $ingredientEditForms = [];
+        foreach ($recipe->getIngredients() as $recipeIngredient) {
+            $form = $this->createForm(RecipeIngredientType::class, $recipeIngredient);
+            $ingredientEditForms[$recipeIngredient->getId()] = $form->createView();
+        }
 
         return $this->render('recipe/show.html.twig', [
             'recipe' => $recipe,
-            'ingredient_form' => $form,
+            'ingredient_form' => $ingredientForm,
+            'edit_form' => $editForm,
+            'ingredient_edit_forms' => $ingredientEditForms,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['POST'])]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -72,14 +83,9 @@ final class RecipeController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Recipe updated successfully!');
-
-            return $this->redirectToRoute('app_recipe_show', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('recipe/edit.html.twig', [
-            'recipe' => $recipe,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_recipe_show', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/delete', name: 'app_recipe_delete', methods: ['POST'])]

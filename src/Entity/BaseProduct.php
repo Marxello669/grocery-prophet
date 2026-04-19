@@ -75,4 +75,104 @@ class BaseProduct
 
         return $this;
     }
+
+    /**
+     * Get the lowest price across all groceries and their latest prices
+     */
+    public function getLowestPrice(): float
+    {
+        $lowestPrice = PHP_FLOAT_MAX;
+        $hasPrice = false;
+
+        foreach ($this->groceries as $grocery) {
+            $prices = $grocery->getPrices();
+            if ($prices->isEmpty()) {
+                continue;
+            }
+
+            // Get the latest price for each shop
+            $latestPrices = [];
+            foreach ($prices as $price) {
+                $shopValue = $price->getShop()->value;
+                if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
+                    $latestPrices[$shopValue] = $price;
+                }
+            }
+
+            // Find the lowest price
+            foreach ($latestPrices as $price) {
+                $priceValue = (float)$price->getValue();
+                if ($priceValue < $lowestPrice) {
+                    $lowestPrice = $priceValue;
+                    $hasPrice = true;
+                }
+            }
+        }
+
+        return $hasPrice ? $lowestPrice : 0;
+    }
+
+    /**
+     * Get the lowest price and corresponding shop for a specific grocery
+     */
+    public function getGroceryLowestPrice(Grocery $grocery): float
+    {
+        $prices = $grocery->getPrices();
+        if ($prices->isEmpty()) {
+            return 0;
+        }
+
+        // Get the latest price for each shop
+        $latestPrices = [];
+        foreach ($prices as $price) {
+            $shopValue = $price->getShop()->value;
+            if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
+                $latestPrices[$shopValue] = $price;
+            }
+        }
+
+        // Find the lowest price
+        $lowestPrice = PHP_FLOAT_MAX;
+        foreach ($latestPrices as $price) {
+            $priceValue = (float)$price->getValue();
+            if ($priceValue < $lowestPrice) {
+                $lowestPrice = $priceValue;
+            }
+        }
+
+        return $lowestPrice < PHP_FLOAT_MAX ? $lowestPrice : 0;
+    }
+
+    /**
+     * Get the shop with the lowest price for a specific grocery
+     */
+    public function getGroceryLowestShop(Grocery $grocery): ?string
+    {
+        $prices = $grocery->getPrices();
+        if ($prices->isEmpty()) {
+            return null;
+        }
+
+        // Get the latest price for each shop
+        $latestPrices = [];
+        foreach ($prices as $price) {
+            $shopValue = $price->getShop()->value;
+            if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
+                $latestPrices[$shopValue] = $price;
+            }
+        }
+
+        // Find the lowest price and shop
+        $lowestPrice = PHP_FLOAT_MAX;
+        $lowestShop = null;
+        foreach ($latestPrices as $price) {
+            $priceValue = (float)$price->getValue();
+            if ($priceValue < $lowestPrice) {
+                $lowestPrice = $priceValue;
+                $lowestShop = $price->getShop()->label();
+            }
+        }
+
+        return $lowestShop;
+    }
 }
