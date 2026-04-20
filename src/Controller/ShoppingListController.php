@@ -20,7 +20,8 @@ final class ShoppingListController extends AbstractController
     #[Route('', name: 'app_shopping_list_index', methods: ['GET'])]
     public function index(ShoppingListItemRepository $repository, GroceryRepository $groceryRepository): Response
     {
-        $items = $repository->findAll();
+        // Use optimized query with eager loading to prevent N+1 queries
+        $items = $repository->findAllWithPrices();
 
         $shops = ShopEnum::cases();
         $shopTotals = [];

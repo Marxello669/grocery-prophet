@@ -23,7 +23,10 @@ class PriceType extends AbstractType
         $builder = new DynamicFormBuilder($builder);
 
         $builder
-            ->add('value', NumberType::class)
+            ->add('value', NumberType::class, [
+                'scale' => 2,
+                'attr' => ['placeholder' => 'ex: 2.50']
+            ])
             ->add('shop', EnumType::class, [
                 'class' => ShopEnum::class,
                 'choice_label' => 'label',

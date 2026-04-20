@@ -46,7 +46,7 @@
                         <ul class="list-disc list-inside space-y-1">
                             <li><strong>Groceries:</strong> Name, Type, Unit, Base Product (optional)</li>
                             <li><strong>Prices:</strong> Grocery Name, Shop, Value, Date</li>
-                            <li><strong>Recipes:</strong> Recipe Name, Description, Servings, Ingredient Base Product, Ingredient Quantity, Ingredient Unit</li>
+                            <li><strong>Recipes:</strong> Recipe Name, Description, Servings, Link, Ingredient Base Product, Ingredient Quantity, Ingredient Unit</li>
                         </ul>
                     </div>
                 </div>
@@ -178,13 +178,12 @@ Rice,continente,2.99,2026-04-17</code></pre>
                         {# Recipes Example #}
                         <div>
                             <p class="text-xs font-semibold mb-2 text-base-content/70">recipes.csv</p>
-                            <pre class="bg-base-200 p-3 rounded text-xs overflow-x-auto"><code>Recipe Name,Description,Servings,Ingredient Base Product,Ingredient Quantity,Ingredient Unit
-Spaghetti Carbonara,Italian pasta dish,4,Pasta,400,g
-Spaghetti Carbonara,Italian pasta dish,4,Bacon,200,g
-Spaghetti Carbonara,Italian pasta dish,4,Eggs,3,unit
-Spaghetti Carbonara,Italian pasta dish,4,Parmesan,100,g
-Caesar Salad,Fresh salad,2,Romaine Lettuce,1,unit
-Caesar Salad,Fresh salad,2,Parmesan,50,g</code></pre>
+                            <pre class="bg-base-200 p-3 rounded text-xs overflow-x-auto"><code>Recipe Name,Description,Servings,Link,Ingredient Base Product,Ingredient Quantity,Ingredient Unit
+Spaghetti Carbonara,Italian pasta,4,https://youtube.com/watch?v=...,Pasta,400,g
+Spaghetti Carbonara,Italian pasta,4,https://youtube.com/watch?v=...,Bacon,200,g
+Spaghetti Carbonara,Italian pasta,4,https://youtube.com/watch?v=...,Eggs,3,unit
+Caesar Salad,Fresh salad,2,,Romaine Lettuce,1,unit
+Caesar Salad,Fresh salad,2,,Parmesan,50,g</code></pre>
                         </div>
                     </div>
                 </div>

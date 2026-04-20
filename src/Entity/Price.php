@@ -17,7 +17,7 @@ class Price
     private ?int $id = null;
 
     #[Assert\Positive]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private ?string $value = null;
 
     #[ORM\Column(type: 'string', enumType: ShopEnum::class)]

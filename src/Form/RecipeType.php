@@ -28,6 +28,13 @@ class RecipeType extends AbstractType
             ->add('servings', IntegerType::class, [
                 'required' => false,
                 'attr' => ['placeholder' => 'Number of servings (optional)']
+            ])
+            ->add('link', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Link to recipe (YouTube, webpage, etc.) (optional)',
+                    'type' => 'url'
+                ]
             ]);
     }
 

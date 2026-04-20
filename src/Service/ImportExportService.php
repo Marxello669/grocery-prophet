@@ -279,7 +279,7 @@ class ImportExportService
             $handle = fopen('php://output', 'w+');
             
             // Write CSV header
-            fputcsv($handle, ['Recipe Name', 'Description', 'Servings', 'Ingredient Base Product', 'Ingredient Quantity', 'Ingredient Unit']);
+            fputcsv($handle, ['Recipe Name', 'Description', 'Servings', 'Link', 'Ingredient Base Product', 'Ingredient Quantity', 'Ingredient Unit']);
             
             // Get all recipes
             $recipes = $this->recipeRepository->findAll();
@@ -291,6 +291,7 @@ class ImportExportService
                         $recipe->getName(),
                         $recipe->getDescription() ?? '',
                         $recipe->getServings() ?? '',
+                        $recipe->getLink() ?? '',
                         '',
                         '',
                         '',
@@ -302,6 +303,7 @@ class ImportExportService
                             $recipe->getName(),
                             $recipe->getDescription() ?? '',
                             $recipe->getServings() ?? '',
+                            $recipe->getLink() ?? '',
                             $ingredient->getBaseProduct()->getName(),
                             $ingredient->getQuantity(),
                             $ingredient->getUnit()->value,
@@ -350,9 +352,10 @@ class ImportExportService
                 $recipeName = $data[0];
                 $description = !empty($data[1]) ? $data[1] : null;
                 $servings = !empty($data[2]) ? (int)$data[2] : null;
-                $baseProductName = $data[3] ?? null;
-                $quantity = $data[4] ?? null;
-                $unit = $data[5] ?? null;
+                $link = !empty($data[3]) ? $data[3] : null;
+                $baseProductName = $data[4] ?? null;
+                $quantity = $data[5] ?? null;
+                $unit = $data[6] ?? null;
                 
                 // Get or create recipe
                 $recipe = $recipeCache[$recipeName] ?? null;
@@ -363,6 +366,7 @@ class ImportExportService
                         $recipe->setName($recipeName);
                         $recipe->setDescription($description);
                         $recipe->setServings($servings);
+                        $recipe->setLink($link);
                         $this->entityManager->persist($recipe);
                         $recipeCache[$recipeName] = $recipe;
                     }

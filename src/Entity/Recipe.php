@@ -21,8 +21,11 @@ class Recipe
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $servings = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $link = null;
 
     /**
      * @var Collection<int, RecipeIngredient>
@@ -72,6 +75,18 @@ class Recipe
     public function setServings(?int $servings): static
     {
         $this->servings = $servings;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): static
+    {
+        $this->link = $link;
 
         return $this;
     }
