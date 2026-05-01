@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class GroceryType extends AbstractType
 {
@@ -19,17 +20,28 @@ class GroceryType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => ['placeholder' => 'Grocery Name']
+                'attr' => ['placeholder' => 'Grocery Name'],
+                'constraints' => [
+                    new Assert\NotBlank(message: 'Name cannot be blank'),
+                    new Assert\Length(
+                        min:2,
+                        max: 255,
+                        minMessage: 'Name must be at least {{ limit }} characters',
+                        maxMessage: 'Name cannot exceed {{ limit }} characters',
+                    ),
+                ]
             ])
             ->add('type', EnumType::class, [
                 'class' => GroceryEnum::class,
                 'choice_label' => 'label',
-                'placeholder' => 'Chose a grocery type'
+                'placeholder' => 'Chose a grocery type',
+                'constraints' => [new Assert\NotNull()]
             ])
             ->add('unit', EnumType::class, [
                 'class' => UnitEnum::class,
                 'choice_label' => 'label',
-                'placeholder' => 'Chose a unit'
+                'placeholder' => 'Chose a unit',
+                'constraints' => [new Assert\NotNull()]
             ])
             ->add('baseProduct', EntityType::class, [
                 'class' => BaseProduct::class,

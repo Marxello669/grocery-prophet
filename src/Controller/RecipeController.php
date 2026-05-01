@@ -73,6 +73,50 @@ final class RecipeController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/scale', name: 'app_recipe_scale', methods: ['GET'])]
+    public function scale(Recipe $recipe, Request $request): Response
+    {
+        $factor = (float)$request->query->get('factor', 1.0);
+        
+        // Prevent invalid scaling factors
+        if ($factor <= 0) {
+            $factor = 1.0;
+        }
+        if ($factor > 10) {
+            $factor = 10;
+        }
+
+        $scaledRecipe = clone $recipe;
+        $scaledIngredients = [];
+
+        // Scale all ingredients
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $lowestPrice = $ingredient->getLowestPrice();
+            $scaled = [
+                'original' => $ingredient,
+                'scaled_quantity' => round($ingredient->getQuantity() * $factor, 2),
+                'factor' => $factor,
+                'lowest_price' => $lowestPrice,
+                'scaled_price' => round($lowestPrice * $factor, 2),
+            ];
+            $scaledIngredients[] = $scaled;
+        }
+
+        // Calculate scaled recipe metrics
+        $scaledServings = $recipe->getServings() ? (int)($recipe->getServings() * $factor) : null;
+        $scaledCost = $recipe->getTotalCost() * $factor;
+
+        return $this->render('recipe/scale.html.twig', [
+            'recipe' => $recipe,
+            'scaled_recipe' => $scaledRecipe,
+            'scaled_ingredients' => $scaledIngredients,
+            'factor' => $factor,
+            'scaled_servings' => $scaledServings,
+            'scaled_cost' => $scaledCost,
+            'original_cost' => $recipe->getTotalCost(),
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['POST'])]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {

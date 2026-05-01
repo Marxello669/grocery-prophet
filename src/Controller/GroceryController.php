@@ -6,6 +6,7 @@ use App\Entity\Grocery;
 use App\Entity\Price;
 use App\Form\GroceryType;
 use App\Repository\GroceryRepository;
+use App\Service\PriceFilteringService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,30 +41,23 @@ final class GroceryController extends AbstractController
     }
 
     #[Route('/grocery/{id:grocery}', name: 'app_grocery_show')]
-    public function show(Grocery $grocery): Response
+    public function show(Grocery $grocery, PriceFilteringService $priceFilteringService): Response
     {
-        // 1. Get current prices
+        // Get the latest price for each shop
+        $latestPricesByShop = $priceFilteringService->getLatestPricePerShop($grocery->getPrices());
+
         $currentPrices = [];
-        $prices = $grocery->getPrices();
-
-        // Group by shop and get the latest price for each
-        $latestPricesByShop = [];
-        foreach ($prices as $price) {
-            $shopValue = $price->getShop()->value;
-            if (!isset($latestPricesByShop[$shopValue]) || $price->getCreatedAt() > $latestPricesByShop[$shopValue]->getCreatedAt()) {
-                $latestPricesByShop[$shopValue] = $price;
-            }
-        }
-
         $minPrice = null;
         $maxPrice = null;
 
+        // Find min and max prices
         foreach ($latestPricesByShop as $price) {
             $val = (float)$price->getValue();
             if ($minPrice === null || $val < $minPrice) $minPrice = $val;
             if ($maxPrice === null || $val > $maxPrice) $maxPrice = $val;
         }
 
+        // Build the price list for template
         foreach ($latestPricesByShop as $price) {
             $val = (float)$price->getValue();
             $currentPrices[] = [

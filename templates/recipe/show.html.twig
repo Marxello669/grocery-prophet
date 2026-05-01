@@ -11,7 +11,7 @@
     </div>
 {% endblock %}
 
-{% block body %}
+{% block body %}{% dump recipe %}
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
 
         {# ── RECIPE HEADER CARD ── #}
@@ -44,12 +44,16 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-2 w-full sm:w-auto">
+                    <div class="flex gap-2 w-full sm:w-auto flex-wrap">
                         <button onclick="document.getElementById('edit_recipe_modal').showModal()"
                            class="btn btn-primary btn-sm">
                             <twig:ux:icon name="lucide:pencil" class="h-4 w-4" />
                             Edit
                         </button>
+                        <a href="{{ path('app_recipe_scale', {id: recipe.id}) }}" class="btn btn-info btn-sm">
+                            <twig:ux:icon name="lucide:maximize-2" class="h-4 w-4" />
+                            Scale
+                        </a>
                         <form method="POST"
                               action="{{ path('app_shopping_list_add_recipe', {id: recipe.id}) }}"
                               style="display:inline;">

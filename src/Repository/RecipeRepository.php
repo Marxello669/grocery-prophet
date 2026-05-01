@@ -17,11 +17,20 @@ class RecipeRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all recipes ordered by name
+     * Find all recipes ordered by name with eager loaded ingredients and prices
+     * This prevents N+1 queries when accessing ingredients and their prices
      */
     public function findAllOrdered()
     {
         return $this->createQueryBuilder('r')
+            ->leftJoin('r.ingredients', 'i')
+            ->addSelect('i')
+            ->leftJoin('i.baseProduct', 'bp')
+            ->addSelect('bp')
+            ->leftJoin('bp.groceries', 'g')
+            ->addSelect('g')
+            ->leftJoin('g.prices', 'p')
+            ->addSelect('p')
             ->orderBy('r.name', 'ASC')
             ->getQuery()
             ->getResult();

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RecipeIngredientType extends AbstractType
 {
@@ -21,16 +22,22 @@ class RecipeIngredientType extends AbstractType
                 'class' => BaseProduct::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Select a base product',
-                'attr' => ['class' => 'select select-bordered']
+                'attr' => ['class' => 'select select-bordered'],
+                'constraints' => [new Assert\NotNull(message: 'Base product must be selected')]
             ])
             ->add('quantity', NumberType::class, [
-                'attr' => ['placeholder' => 'Quantity', 'step' => '0.01']
+                'attr' => ['placeholder' => 'Quantity', 'step' => '0.01'],
+                'constraints' => [
+                    new Assert\NotBlank(message: 'Quantity cannot be blank'),
+                    new Assert\Positive(message: 'Quantity must be a positive number')
+                ]
             ])
             ->add('unit', EnumType::class, [
                 'class' => UnitEnum::class,
                 'choice_label' => 'label',
                 'placeholder' => 'Select unit',
-                'attr' => ['class' => 'select select-bordered']
+                'attr' => ['class' => 'select select-bordered'],
+                'constraints' => [new Assert\NotNull(message: 'Unit must be selected')]
             ]);
     }
 

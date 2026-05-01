@@ -95,31 +95,14 @@ class RecipeIngredient
         $hasPrice = false;
 
         foreach ($this->baseProduct->getGroceries() as $grocery) {
-            $prices = $grocery->getPrices();
-            if ($prices->isEmpty()) {
+            $latestPrices = $this->getLatestPricesPerShop($grocery);
+            if (empty($latestPrices)) {
                 continue;
-            }
-
-            // Get the latest price for each shop
-            $latestPrices = [];
-            foreach ($prices as $price) {
-                $shopValue = $price->getShop()->value;
-                if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
-                    $latestPrices[$shopValue] = $price;
-                }
             }
 
             // Find the lowest price and convert units appropriately
             foreach ($latestPrices as $price) {
-                $priceValue = (float)$price->getValue();
-                $groceryUnit = $grocery->getUnit();
-
-                // Convert recipe quantity from its unit to the grocery's unit
-                // Formula: recipeQuantity * recipeUnit.getFactor() / groceryUnit.getFactor()
-                $convertedQuantity = $this->quantity * $this->unit->getFactor() / $groceryUnit->getFactor();
-
-                // Calculate the actual cost for this quantity
-                $cost = $priceValue * $convertedQuantity;
+                $cost = $this->calculateCostForPrice($grocery, (float)$price->getValue());
 
                 if ($cost < $lowestCost) {
                     $lowestCost = $cost;
@@ -128,11 +111,7 @@ class RecipeIngredient
             }
         }
 
-        if (!$hasPrice) {
-            return 0;
-        }
-
-        return $lowestCost;
+        return $hasPrice ? $lowestCost : 0;
     }
 
     /**
@@ -149,31 +128,14 @@ class RecipeIngredient
         $lowestShop = null;
 
         foreach ($this->baseProduct->getGroceries() as $grocery) {
-            $prices = $grocery->getPrices();
-            if ($prices->isEmpty()) {
+            $latestPrices = $this->getLatestPricesPerShop($grocery);
+            if (empty($latestPrices)) {
                 continue;
             }
 
-            // Get the latest price for each shop
-            $latestPrices = [];
-            foreach ($prices as $price) {
-                $shopValue = $price->getShop()->value;
-                if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
-                    $latestPrices[$shopValue] = $price;
-                }
-            }
-
-            // Find the lowest price and shop considering unit conversion
+            // Find the lowest price and shop
             foreach ($latestPrices as $price) {
-                $priceValue = (float)$price->getValue();
-                $groceryUnit = $grocery->getUnit();
-
-                // Convert recipe quantity from its unit to the grocery's unit
-                // Formula: recipeQuantity * recipeUnit.getFactor() / groceryUnit.getFactor()
-                $convertedQuantity = $this->quantity * $this->unit->getFactor() / $groceryUnit->getFactor();
-
-                // Calculate the actual cost for this quantity
-                $cost = $priceValue * $convertedQuantity;
+                $cost = $this->calculateCostForPrice($grocery, (float)$price->getValue());
 
                 if ($cost < $lowestCost) {
                     $lowestCost = $cost;
@@ -199,39 +161,57 @@ class RecipeIngredient
         $lowestUnitPrice = 0;
 
         foreach ($this->baseProduct->getGroceries() as $grocery) {
-            $prices = $grocery->getPrices();
-            if ($prices->isEmpty()) {
+            $latestPrices = $this->getLatestPricesPerShop($grocery);
+            if (empty($latestPrices)) {
                 continue;
-            }
-
-            // Get the latest price for each shop
-            $latestPrices = [];
-            foreach ($prices as $price) {
-                $shopValue = $price->getShop()->value;
-                if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
-                    $latestPrices[$shopValue] = $price;
-                }
             }
 
             // Find the lowest price and track its unit price
             foreach ($latestPrices as $price) {
                 $priceValue = (float)$price->getValue();
-                $groceryUnit = $grocery->getUnit();
-
-                // Convert recipe quantity from its unit to the grocery's unit
-                $convertedQuantity = $this->quantity * $this->unit->getFactor() / $groceryUnit->getFactor();
-
-                // Calculate the actual cost for this quantity
-                $cost = $priceValue * $convertedQuantity;
+                $cost = $this->calculateCostForPrice($grocery, $priceValue);
 
                 if ($cost < $lowestCost) {
                     $lowestCost = $cost;
-                    // Store the unit price of this grocery
                     $lowestUnitPrice = $priceValue;
                 }
             }
         }
 
         return $lowestUnitPrice;
+    }
+
+    /**
+     * Get the latest price for each shop from a grocery's prices
+     *
+     * @return array<int, Price>
+     */
+    private function getLatestPricesPerShop(Grocery $grocery): array
+    {
+        $prices = $grocery->getPrices();
+        if ($prices->isEmpty()) {
+            return [];
+        }
+
+        $latestPrices = [];
+        foreach ($prices as $price) {
+            $shopValue = $price->getShop()->value;
+            if (!isset($latestPrices[$shopValue]) || $price->getCreatedAt() > $latestPrices[$shopValue]->getCreatedAt()) {
+                $latestPrices[$shopValue] = $price;
+            }
+        }
+
+        return $latestPrices;
+    }
+
+    /**
+     * Calculate cost for this ingredient given a grocery and its unit price
+     * Handles unit conversion from recipe unit to grocery unit
+     */
+    private function calculateCostForPrice(Grocery $grocery, float $priceValue): float
+    {
+        $groceryUnit = $grocery->getUnit();
+        $convertedQuantity = $this->quantity * $this->unit->getFactor() / $groceryUnit->getFactor();
+        return $priceValue * $convertedQuantity;
     }
 }
