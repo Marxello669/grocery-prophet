@@ -1,5 +1,4 @@
-
-###> symfony/framework-bundle ###
+# ── Symfony ───────────────────────────────────────────────────────────────── #
 .env
 /.env.local
 /.env.local.php
@@ -8,18 +7,17 @@
 /public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
+# ── PHPUnit ───────────────────────────────────────────────────────────────── #
 /phpunit.xml
 /.phpunit.cache/
-###< phpunit/phpunit ###
 
-###> symfony/asset-mapper ###
+# ── Asset Mapper ──────────────────────────────────────────────────────────── #
 /public/assets/
 /assets/vendor/
-###< symfony/asset-mapper ###
 
-###< .idea ###
-.idea
-###< .idea ###
+# ── IDE ───────────────────────────────────────────────────────────────────── #
+.idea/
+
+# ── Local Config ──────────────────────────────────────────────────────────── #
+config/reference.php
