@@ -11,6 +11,7 @@ enum ShopEnum: string
     case mercadona = 'mercadona';
     case pingo_doce = 'pingo_doce';
     case rei_dos_precos = 'rei_dos_precos';
+    case jbla = 'jbla';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum ShopEnum: string
             self::pingo_doce => "Pingo Doce",
             self::intermarche => "Intermarché",
             self::mercadona => "Mercadona",
+            self::jbla => "João Borges Lima Aguiar, Lda",
         };
     }
 
@@ -35,6 +37,7 @@ enum ShopEnum: string
             self::pingo_doce => "#00843d",
             self::intermarche => "#e21e26",
             self::mercadona => "#00a650",
+            self::jbla => "#2ecc8a",
         };
     }
 
@@ -51,6 +54,7 @@ enum ShopEnum: string
             self::pingo_doce->value => self::pingo_doce->color(),
             self::intermarche->value => self::intermarche->color(),
             self::mercadona->value => self::mercadona->color(),
+            self::jbla->value => self::jbla->color(),
         ];
     }
 }
